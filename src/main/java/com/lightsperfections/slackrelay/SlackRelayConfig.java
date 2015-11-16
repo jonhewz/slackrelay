@@ -1,4 +1,4 @@
-package com.lightsperfections.slackrelay.com.lightsperfections.slackrelay;
+package com.lightsperfections.slackrelay;
 
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import com.lightsperfections.slackrelay.services.Unimplemented;
@@ -18,12 +18,12 @@ public class SlackRelayConfig {
 
     @Bean
     @Primary
-    public SlackRelayService ESVQueryPassage() {
+    public SlackRelayService QueryPassage() {
         return new QueryPassage();
     }
 
     @Bean
-    public SlackRelayService UnimplementedService() {
+    public SlackRelayService Unimplemented() {
         return new Unimplemented();
     }
 }

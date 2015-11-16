@@ -3,7 +3,7 @@ package com.lightsperfections.slackrelay;
 import java.util.Hashtable;
 
 import com.lightsperfections.slackrelay.SlackRelayConfig;
-import com.lightsperfections.slackrelay.SlackRelayService;
+import com.lightsperfections.slackrelay.services.SlackRelayService;
 import org.springframework.config.java.context.JavaConfigApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,7 +32,7 @@ public class SlackCommandController {
 
     /**
      * This is the generic endpoint for all ESV activity. The ESV api supports many actions: passageQuery,
-     * query, readingPlanQuery,queryInfo, readingPlanInfo, verse, dailyVerse.
+     * query, readingPlanQuery, queryInfo, readingPlanInfo, verse, dailyVerse.
      *
      * The text param can contain an optional action, and this can be extended to support as many actions
      * as are desired. If no action is provided it will default to a passageLookup
@@ -50,14 +50,14 @@ public class SlackCommandController {
      */
     @RequestMapping(value = "/esv", method = RequestMethod.POST)
     public String greeting(@RequestParam("token") String token,
-                             @RequestParam("team_id") String teamId,
-                             @RequestParam("team_domain") String teamDomain,
-                             @RequestParam("channel_id") String channelId,
-                             @RequestParam("channel_name") String channelName,
-                             @RequestParam("user_id") String userId,
-                             @RequestParam("user_name") String userName,
-                             @RequestParam("command") String command,
-                             @RequestParam("text") String text) {
+                           @RequestParam("team_id") String teamId,
+                           @RequestParam("team_domain") String teamDomain,
+                           @RequestParam("channel_id") String channelId,
+                           @RequestParam("channel_name") String channelName,
+                           @RequestParam("user_id") String userId,
+                           @RequestParam("user_name") String userName,
+                           @RequestParam("command") String command,
+                           @RequestParam("text") String text) {
 
         // TODO: Authenticate request. Check token, team_id, team_domain.
 
@@ -70,8 +70,8 @@ public class SlackCommandController {
 
         SlackRelayService service;
         int tokenLocation = text.indexOf(" ");
-        String subcommand = text.substring(0, tokenLocation);
-        if (subcommand != null && subcommand.length() > 0) {
+        String subcommand = text.substring(0, tokenLocation == -1 ? 0 : tokenLocation);
+        if (subcommand.length() > 0) {
 
             // Try to get the service with the NAME of the provided subcommand. If that doesn't work,
             // use the unimplemented service to correctly bubble-up the problem
