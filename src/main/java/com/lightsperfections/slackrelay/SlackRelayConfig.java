@@ -16,13 +16,13 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class SlackRelayConfig {
 
-    @Bean
+    @Bean(name="queryPassage")
     @Primary
     public SlackRelayService QueryPassage() {
         return new QueryPassage();
     }
 
-    @Bean
+    @Bean(name="unimplemented")
     public SlackRelayService Unimplemented() {
         return new Unimplemented();
     }

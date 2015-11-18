@@ -4,7 +4,9 @@ import java.util.Hashtable;
 
 import com.lightsperfections.slackrelay.SlackRelayConfig;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.config.java.context.JavaConfigApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SlackCommandController {
 
-    JavaConfigApplicationContext context = new JavaConfigApplicationContext(SlackRelayConfig.class);
+
+    AnnotationConfigApplicationContext context =
+            new AnnotationConfigApplicationContext(SlackRelayConfig.class);
 
     /**
      * This is the generic endpoint for all ESV activity. The ESV api supports many actions: passageQuery,
@@ -75,16 +79,17 @@ public class SlackCommandController {
 
             // Try to get the service with the NAME of the provided subcommand. If that doesn't work,
             // use the unimplemented service to correctly bubble-up the problem
-            service = context.getBean(SlackRelayService.class, subcommand);
-            if (service == null) {
-                service = context.getBean(SlackRelayService.class, "unimplemented");
+            try {
+                service = context.getBean(SlackRelayService.class, subcommand);
+            } catch (NoSuchBeanDefinitionException e) {
+                service = context.getBean("unimplemented", SlackRelayService.class);
             }
 
             // Peel the subcommand out of "text", and proceed
             text = text.substring(tokenLocation);
         } else {
             // No subcommand was provided, so just use the default one.
-            service = context.getBean(SlackRelayService.class);
+            service = (SlackRelayService) context.getBean(SlackRelayService.class);
         }
         return service.performAction(text);
 
