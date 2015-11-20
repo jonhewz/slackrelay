@@ -18,12 +18,12 @@ public class SlackRelayConfig {
 
     @Bean(name="queryPassage")
     @Primary
-    public SlackRelayService QueryPassage() {
+    public SlackRelayService getQueryPassageService() {
         return new QueryPassage();
     }
 
     @Bean(name="unimplemented")
-    public SlackRelayService Unimplemented() {
+    public SlackRelayService getUnimplementedService() {
         return new Unimplemented();
     }
 }
