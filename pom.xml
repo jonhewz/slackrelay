@@ -48,6 +48,14 @@
             <version>1.0-groovy-2.4</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- https://github.com/jgritman/httpbuilder -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>http-builder</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>
