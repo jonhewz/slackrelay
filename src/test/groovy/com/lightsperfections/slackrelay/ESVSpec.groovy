@@ -1,9 +1,7 @@
-package com.lightsperfections.slackrelay;
+package com.lightsperfections.slackrelay
 
+import groovyx.net.http.RESTClient;
 import spock.lang.Specification;
-import groovyx.net.http.HTTPBuilder;
-import static groovyx.net.http.ContentType.*;
-import static groovyx.net.http.Method.*;
 
 /**
  * Created with IntelliJ IDEA.
