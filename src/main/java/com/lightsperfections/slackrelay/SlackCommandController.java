@@ -89,7 +89,7 @@ public class SlackCommandController {
             text = text.substring(tokenLocation);
         } else {
             // No subcommand was provided, so just use the default one.
-            service = (SlackRelayService) context.getBean(SlackRelayService.class);
+            service = context.getBean(SlackRelayService.class);
         }
         return service.performAction(text);
 
