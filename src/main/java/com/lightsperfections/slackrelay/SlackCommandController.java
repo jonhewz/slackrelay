@@ -1,11 +1,7 @@
 package com.lightsperfections.slackrelay;
 
-import java.util.Hashtable;
-
-import com.lightsperfections.slackrelay.SlackRelayConfig;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.config.java.context.JavaConfigApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
