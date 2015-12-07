@@ -1,6 +1,7 @@
 package com.lightsperfections.slackrelay
 
 import groovyx.net.http.RESTClient
+import groovyx.net.http.ContentType.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Value
@@ -27,15 +28,41 @@ public class ESVSpec extends Specification {
     private int port;
 
     @Test
-    def "should return 200"() {
+    def "GET is an invalid request method"() {
         setup:
-        def primerEndpoint = new RESTClient( "http://localhost:$port/" )
+        def client = new RESTClient( "http://localhost:$port/" )
+        client.handler.failure = client.handler.success
         when:
-        def resp = primerEndpoint.get([ path: 'esv', query : [ input: 'texty' ]])
+        def resp = client.get([ path: 'esv', query : [ input: 'phil' ]])
+        then:
+        with(resp) {
+            status == 405
+        }
+    }
+
+    @Test
+    def "POST with all params returns success"() {
+        setup:
+        def client = new RESTClient( "http://localhost:$port/" )
+        client.handler.failure = client.handler.success
+        def paramMap = [:]
+        paramMap["token"] = "token";
+        paramMap["teamId"] = "teamId";
+        paramMap["teamDomain"] = "teamDomain";
+        paramMap["channelId"] = "channelId";
+        paramMap["channelName"] = "channelName";
+        paramMap["userId"] = "userId";
+        paramMap["userName"] = "userName";
+        paramMap["command"] = "command";
+        paramMap["text"] = "text";
+        when:
+        def resp = client.post(
+                path: 'esv',
+                body: paramMap,
+                requestContentType: "application/x-www-form-urlencoded" )
         then:
         with(resp) {
             status == 200
-            contentType == "application/json"
         }
     }
 }
