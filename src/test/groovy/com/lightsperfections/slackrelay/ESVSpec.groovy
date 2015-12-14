@@ -1,5 +1,6 @@
 package com.lightsperfections.slackrelay
 
+import groovy.transform.Field
 import groovyx.net.http.RESTClient
 import groovyx.net.http.HTTPBuilder
 import static groovyx.net.http.ContentType.URLENC
@@ -23,12 +24,12 @@ import spock.lang.Specification;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = SpringApplicationContextLoader, classes = Application.class)
 @WebAppConfiguration
-@IntegrationTest("server.port=8080")
+@IntegrationTest("server.port=9000")
 public class ESVSpec extends Specification {
 
     @Value("\${server.port}")
     private int port;
-/*
+
     @Test
     def "GET is an invalid request method"() {
         setup:
@@ -41,18 +42,19 @@ public class ESVSpec extends Specification {
             status == 405
         }
     }
-*/
+
     @Test
     def "POST with all params returns success"() {
         setup:
         def client = new RESTClient( "http://localhost:$port/" )
         client.handler.failure = client.handler.success
         def paramMap = [token: 'token',
-                        teamId: 'teamId',
-                        channelId: 'channelId',
-                        channelName: 'channelName',
-                        userId: 'userId',
-                        userName: 'userName',
+                        team_id: 'teamId',
+                        team_domain: 'teamDomain',
+                        channel_id: 'channelId',
+                        channel_name: 'channelName',
+                        user_id: 'userId',
+                        user_name: 'userName',
                         command: 'command',
                         text: 'text']
         when:
@@ -64,6 +66,32 @@ public class ESVSpec extends Specification {
         then:
         with(resp) {
             status == 200
+        }
+    }
+
+    @Test
+    def "POST with missing param returns 400"() {
+        setup:
+        def partialParamMap = [team_id: 'teamId',
+                               team_domain: 'teamDomain',
+                               channel_id: 'channelId',
+                               channel_name: 'channelName',
+                               user_id: 'userId',
+                               user_name: 'userName',
+                               command: 'command',
+                               text: 'text']
+
+        def client = new RESTClient( "http://localhost:$port/" )
+        client.handler.failure = client.handler.success
+        when:
+        def resp = client.post(
+                path: 'esv',
+                requestContentType: URLENC,
+                body: partialParamMap
+        )
+        then:
+        with(resp) {
+            status == 400
         }
     }
 }

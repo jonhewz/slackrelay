@@ -3,6 +3,8 @@ package com.lightsperfections.slackrelay;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import com.lightsperfections.slackrelay.services.Unimplemented;
 import com.lightsperfections.slackrelay.services.esv.QueryPassage;
+import org.jboss.logging.Field;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -26,4 +28,5 @@ public class SlackRelayConfig {
     public SlackRelayService getUnimplementedService() {
         return new Unimplemented();
     }
+
 }
