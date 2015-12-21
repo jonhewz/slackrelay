@@ -1,8 +1,11 @@
 package com.lightsperfections.slackrelay;
 
+import com.lightsperfections.slackrelay.authentication.SlackAuthenticationStrategy;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,7 +52,7 @@ public class SlackCommandController {
      * @return
      */
     @RequestMapping(value = "/esv", method = RequestMethod.POST)
-    public String greeting(@RequestParam("token") String token,
+    public ResponseEntity<String> greeting(@RequestParam("token") String token,
                            @RequestParam("team_id") String teamId,
                            @RequestParam("team_domain") String teamDomain,
                            @RequestParam("channel_id") String channelId,
@@ -59,7 +62,18 @@ public class SlackCommandController {
                            @RequestParam("command") String command,
                            @RequestParam("text") String text) {
 
-        // TODO: Authenticate request. Check token, team_id, team_domain.
+        // Authenticate based on Slack Token. This can be expanded to allow multiple tokens or to
+        // authenticate on any of the other pieces of data sent by Slack. But for now, simple.
+        try {
+            String allowedToken = (String) context.getBean("allowedToken");
+            if (allowedToken != null && allowedToken.equalsIgnoreCase(token)) {
+
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<String>("You shall not pass", HttpStatus.UNAUTHORIZED);
+        }
+
+
 
         // Parse out optional subcommand. In the example "/esv passageQuery Matthew 5:14", "esv" is
         // the command, "passageQuery" is the subcommand, and "Matthew 5:14" is what should be passed
@@ -87,7 +101,7 @@ public class SlackCommandController {
             // No subcommand was provided, so just use the default one.
             service = context.getBean(SlackRelayService.class);
         }
-        return service.performAction(text);
+        return new ResponseEntity<String> (service.performAction(text), HttpStatus.OK);
 
     }
 }
