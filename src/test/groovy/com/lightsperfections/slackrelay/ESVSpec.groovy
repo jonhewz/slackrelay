@@ -24,7 +24,7 @@ import spock.lang.Specification;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = SpringApplicationContextLoader, classes = Application.class)
 @WebAppConfiguration
-@IntegrationTest("server.port=9000")
+@IntegrationTest(["server.port=9000", "slack.token=TEST"])
 public class ESVSpec extends Specification {
 
     @Value("\${server.port}")
@@ -48,7 +48,7 @@ public class ESVSpec extends Specification {
         setup:
         def client = new RESTClient( "http://localhost:$port/" )
         client.handler.failure = client.handler.success
-        def paramMap = [token: 'token',
+        def paramMap = [token: 'TEST',
                         team_id: 'teamId',
                         team_domain: 'teamDomain',
                         channel_id: 'channelId',
@@ -66,6 +66,32 @@ public class ESVSpec extends Specification {
         then:
         with(resp) {
             status == 200
+        }
+    }
+
+    @Test
+    def "Invalid token returns unauthorized"() {
+        setup:
+        def client = new RESTClient( "http://localhost:$port/" )
+        client.handler.failure = client.handler.success
+        def paramMap = [token: 'sultans of swing',
+                        team_id: 'teamId',
+                        team_domain: 'teamDomain',
+                        channel_id: 'channelId',
+                        channel_name: 'channelName',
+                        user_id: 'userId',
+                        user_name: 'userName',
+                        command: 'command',
+                        text: 'text']
+        when:
+        def resp = client.post(
+                path: 'esv',
+                requestContentType: URLENC,
+                body: paramMap
+        )
+        then:
+        with(resp) {
+            status == 401
         }
     }
 

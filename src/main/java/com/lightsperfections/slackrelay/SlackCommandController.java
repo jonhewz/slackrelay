@@ -1,6 +1,5 @@
 package com.lightsperfections.slackrelay;
 
-import com.lightsperfections.slackrelay.authentication.SlackAuthenticationStrategy;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -65,12 +64,21 @@ public class SlackCommandController {
         // Authenticate based on Slack Token. This can be expanded to allow multiple tokens or to
         // authenticate on any of the other pieces of data sent by Slack. But for now, simple.
         try {
-            String allowedToken = (String) context.getBean("allowedToken");
-            if (allowedToken != null && allowedToken.equalsIgnoreCase(token)) {
+            String authorizedSlackToken = context.getBean("authorizedSlackToken", String.class);
 
+            // Server error - need to pass in the allowed slack token
+            if (authorizedSlackToken == null) {
+                return new ResponseEntity<String>("Authorization misconfiguration", HttpStatus.INTERNAL_SERVER_ERROR);
+
+            // Client error - token mismatch
+            } else if (!authorizedSlackToken.equalsIgnoreCase(token)) {
+                return new ResponseEntity<String>("Authorization denied for provided token", HttpStatus.UNAUTHORIZED);
             }
-        } catch (Exception e) {
-            return new ResponseEntity<String>("You shall not pass", HttpStatus.UNAUTHORIZED);
+
+            // Else - good to, carry on.
+
+        } catch (NoSuchBeanDefinitionException e) {
+            return new ResponseEntity<String>("Authorization unconfigured", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
 
