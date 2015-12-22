@@ -1,5 +1,7 @@
 package com.lightsperfections.slackrelay;
 
+import com.lightsperfections.slackrelay.services.DependentServiceException;
+import com.lightsperfections.slackrelay.services.InternalImplementationException;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -109,7 +111,24 @@ public class SlackCommandController {
             // No subcommand was provided, so just use the default one.
             service = context.getBean(SlackRelayService.class);
         }
-        return new ResponseEntity<String> (service.performAction(text), HttpStatus.OK);
+
+
+        
+        // The relayed request can fail because the dependent service is having problems, or because _this_
+        // application has bugs. Trying to be helpful in diagnosing the problem.
+        String responseText;
+        try {
+            responseText = service.performAction(text);
+        } catch (DependentServiceException e) {
+            return new ResponseEntity<String> (service.getName() + " failed.", HttpStatus.BAD_GATEWAY);
+
+        } catch (InternalImplementationException e) {
+            return new ResponseEntity<String> ("Internal error trying to proxy request to " + service.getName() + ".",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+        return new ResponseEntity<String> (responseText, HttpStatus.OK);
 
     }
 }

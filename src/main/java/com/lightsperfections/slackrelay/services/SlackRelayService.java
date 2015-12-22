@@ -7,5 +7,6 @@ package com.lightsperfections.slackrelay.services;
  * Time: 3:10 PM
  */
 public interface SlackRelayService {
-    public String performAction(String userText);
+    public String getName();
+    public String performAction(String userText) throws DependentServiceException, InternalImplementationException;
 }

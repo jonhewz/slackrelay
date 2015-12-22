@@ -8,7 +8,9 @@ package com.lightsperfections.slackrelay.services;
  */
 public class Unimplemented implements SlackRelayService {
     @Override
+    public String getName() { return "Unimplemented"; }
+    @Override
     public String performAction(String userText) {
-        return "Unimplemented";
+        return getName();
     }
 }

@@ -2,7 +2,7 @@ package com.lightsperfections.slackrelay;
 
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import com.lightsperfections.slackrelay.services.Unimplemented;
-import com.lightsperfections.slackrelay.services.esv.QueryPassage;
+import com.lightsperfections.slackrelay.services.esv.PassageQuery;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,10 +37,13 @@ public class SlackRelayConfig {
         return esvKey;
     }
 
-    @Bean(name="queryPassage")
+    private String esvBaseUrl = "http://www.esvapi.org/v2/rest/";
+    private String esvPassageQueryPath = "passageQuery";
+
+    @Bean(name="passageQuery")
     @Primary
-    public SlackRelayService getQueryPassageService() {
-        return new QueryPassage();
+    public SlackRelayService getPassageQueryService() {
+        return new PassageQuery("ESV Passage Query", esvBaseUrl, esvPassageQueryPath);
     }
 
     @Bean(name="unimplemented")
