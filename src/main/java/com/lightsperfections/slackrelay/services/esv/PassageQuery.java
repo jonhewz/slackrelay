@@ -25,9 +25,6 @@ public class PassageQuery implements SlackRelayService {
 
     private final OkHttpClient client = new OkHttpClient();
 
-    AnnotationConfigApplicationContext context =
-            new AnnotationConfigApplicationContext(SlackRelayConfig.class);
-
     public PassageQuery(String name, String baseUrl, String path) {
         this.name = name;
         this.baseUrl = baseUrl;
@@ -45,6 +42,9 @@ public class PassageQuery implements SlackRelayService {
      */
     @Override
     public String performAction(String userText) throws DependentServiceException, InternalImplementationException {
+
+        AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(SlackRelayConfig.class);
 
         String body;
         try {

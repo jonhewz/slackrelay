@@ -37,10 +37,13 @@ public class SlackRelayConfig {
         return esvKey;
     }
 
-    private String esvBaseUrl = "http://www.esvapi.org/v2/rest/";
-    private String esvPassageQueryPath = "passageQuery";
+    @Value("http://www.esvapi.org/v2/rest/")
+    private String esvBaseUrl;
 
-    @Bean(name="passageQuery")
+    @Value("passageQuery")
+    private String esvPassageQueryPath;
+
+    @Bean(name="passagequery")
     @Primary
     public SlackRelayService getPassageQueryService() {
         return new PassageQuery("ESV Passage Query", esvBaseUrl, esvPassageQueryPath);

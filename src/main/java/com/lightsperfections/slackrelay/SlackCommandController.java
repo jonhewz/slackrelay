@@ -92,7 +92,10 @@ public class SlackCommandController {
         // However, assuming that passageQuery is the service marked PRIMARY, the user could just
         // specify "/esv Matthew 5:14" and it should return the results of a passageQuery.
 
+        // Initialize to default service
         SlackRelayService service;
+
+        // Try to find a more specific service
         int tokenLocation = text.indexOf(" ");
         String subcommand = text.substring(0, tokenLocation == -1 ? 0 : tokenLocation);
         if (subcommand.length() > 0) {
@@ -100,15 +103,15 @@ public class SlackCommandController {
             // Try to get the service with the NAME of the provided subcommand. If that doesn't work,
             // use the unimplemented service to correctly bubble-up the problem
             try {
-                service = context.getBean(SlackRelayService.class, subcommand);
-            } catch (NoSuchBeanDefinitionException e) {
-                service = context.getBean("unimplemented", SlackRelayService.class);
-            }
+                service = context.getBean(subcommand.toLowerCase(), SlackRelayService.class);
 
-            // Peel the subcommand out of "text", and proceed
-            text = text.substring(tokenLocation);
+                // Peel the subcommand out of "text", and proceed
+                text = text.substring(tokenLocation);
+
+            } catch (NoSuchBeanDefinitionException e) {
+                service = context.getBean(SlackRelayService.class);
+            }
         } else {
-            // No subcommand was provided, so just use the default one.
             service = context.getBean(SlackRelayService.class);
         }
 
