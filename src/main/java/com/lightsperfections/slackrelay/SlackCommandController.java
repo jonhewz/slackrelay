@@ -1,5 +1,6 @@
 package com.lightsperfections.slackrelay;
 
+import com.lightsperfections.slackrelay.beans.SlackResponse;
 import com.lightsperfections.slackrelay.services.DependentServiceException;
 import com.lightsperfections.slackrelay.services.InternalImplementationException;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
@@ -53,7 +54,8 @@ public class SlackCommandController {
      * @return
      */
     @RequestMapping(value = "/esv", method = RequestMethod.POST)
-    public ResponseEntity<String> greeting(@RequestParam("token") String token,
+    public ResponseEntity<SlackResponse> greeting(
+                           @RequestParam("token") String token,
                            @RequestParam("team_id") String teamId,
                            @RequestParam("team_domain") String teamDomain,
                            @RequestParam("channel_id") String channelId,
@@ -68,19 +70,25 @@ public class SlackCommandController {
         try {
             String authorizedSlackToken = context.getBean("authorizedSlackToken", String.class);
 
-            // Server error - need to pass in the allowed slack token
+            // Server error - need to pass the allowed slack token into the application at startup
             if (authorizedSlackToken == null) {
-                return new ResponseEntity<String>("Authorization misconfiguration", HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<SlackResponse>(
+                        SlackResponse.createPrivate("Authorization misconfiguration"),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
 
             // Client error - token mismatch
             } else if (!authorizedSlackToken.equalsIgnoreCase(token)) {
-                return new ResponseEntity<String>("Authorization denied for provided token", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<SlackResponse>(
+                        SlackResponse.createPrivate("Authorization denied for provided token"),
+                        HttpStatus.UNAUTHORIZED);
             }
 
-            // Else - good to, carry on.
+            // Else - good to go, carry on.
 
         } catch (NoSuchBeanDefinitionException e) {
-            return new ResponseEntity<String>("Authorization unconfigured", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<SlackResponse>(
+                    SlackResponse.createPrivate("Authorization unconfigured"),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
 
@@ -123,15 +131,20 @@ public class SlackCommandController {
         try {
             responseText = service.performAction(text);
         } catch (DependentServiceException e) {
-            return new ResponseEntity<String> (service.getName() + " failed.", HttpStatus.BAD_GATEWAY);
+            return new ResponseEntity<SlackResponse> (
+                    SlackResponse.createPrivate(service.getName() + " failed."),
+                    HttpStatus.BAD_GATEWAY);
 
         } catch (InternalImplementationException e) {
-            return new ResponseEntity<String> ("Internal error trying to proxy request to " + service.getName() + ".",
+            return new ResponseEntity<SlackResponse> (
+                    SlackResponse.createPublic("Internal error trying to proxy request to " + service.getName() + "."),
                     HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
 
-        return new ResponseEntity<String> (responseText, HttpStatus.OK);
+        return new ResponseEntity<SlackResponse> (
+                SlackResponse.createPublic(responseText),
+                HttpStatus.OK);
 
     }
 }

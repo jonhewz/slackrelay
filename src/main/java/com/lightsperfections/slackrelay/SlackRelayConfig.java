@@ -59,10 +59,10 @@ public class SlackRelayConfig {
         rv.put("include-footnotes", "false");
         rv.put("include-short-copyright", "false");
         rv.put("include-copyright", "false");
-        rv.put("include-passage-horizontal-lines", "true");
-        rv.put("include-heading-horizontal-lines", "true");
-        rv.put("include-headings", "true");
-        rv.put("include-subheadings", "true");
+        rv.put("include-passage-horizontal-lines", "false");
+        rv.put("include-heading-horizontal-lines", "false");
+        rv.put("include-headings", "false");
+        rv.put("include-subheadings", "false");
         rv.put("include-selahs", "true");
         rv.put("include-content-type", "true");
         rv.put("line-length", "0");
