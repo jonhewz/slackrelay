@@ -54,8 +54,6 @@ public class PassageQuery implements SlackRelayService {
             String url = getBaseUrl() + getPath() + "?key=" + context.getBean("esvKey") + convertParams(getParams()) +
                     "&passage=" + userText;
 
-            System.out.println(url);
-
             Request request = new Request.Builder().url(url).build();
 
             Response response = client.newCall(request).execute();
