@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 /**
  * Created with IntelliJ IDEA.
@@ -80,4 +81,13 @@ public class SlackRelayConfig {
         return new Unimplemented();
     }
 
+    @Bean
+    public CommonsRequestLoggingFilter requestLoggingFilter() {
+        CommonsRequestLoggingFilter crlf = new CommonsRequestLoggingFilter();
+        crlf.setIncludeClientInfo(true);
+        crlf.setIncludeQueryString(true);
+        crlf.setIncludePayload(true);
+        crlf.setMaxPayloadLength(500);
+        return crlf;
+    }
 }

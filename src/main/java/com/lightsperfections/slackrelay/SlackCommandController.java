@@ -4,6 +4,8 @@ import com.lightsperfections.slackrelay.beans.SlackResponse;
 import com.lightsperfections.slackrelay.services.DependentServiceException;
 import com.lightsperfections.slackrelay.services.InternalImplementationException;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 
 /**
  * SlackCommandController is intended to be called by Slack slash commands, as documented here:
@@ -30,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SlackCommandController {
-
+    Logger logger = LoggerFactory.getLogger("SlackCommandController");
 
     AnnotationConfigApplicationContext context =
             new AnnotationConfigApplicationContext(SlackRelayConfig.class);
