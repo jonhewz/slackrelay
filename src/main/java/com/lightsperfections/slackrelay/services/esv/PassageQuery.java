@@ -11,6 +11,7 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,13 +23,15 @@ public class PassageQuery implements SlackRelayService {
     private final String name;
     private final String baseUrl;
     private final String path;
+    private final Map<String, String> params;
 
     private final OkHttpClient client = new OkHttpClient();
 
-    public PassageQuery(String name, String baseUrl, String path) {
+    public PassageQuery(String name, String baseUrl, String path, Map<String, String> params) {
         this.name = name;
         this.baseUrl = baseUrl;
         this.path = path;
+        this.params = params;
     }
 
     /**
@@ -48,10 +51,12 @@ public class PassageQuery implements SlackRelayService {
 
         String body;
         try {
+            String url = getBaseUrl() + getPath() + "?key=" + context.getBean("esvKey") + convertParams(getParams()) +
+                    "&passage=" + userText;
 
-            Request request = new Request.Builder()
-                .url(getBaseUrl() + getPath() + "?key=" + context.getBean("esvKey") + "&passage=" + userText)
-                .build();
+            System.out.println(url);
+
+            Request request = new Request.Builder().url(url).build();
 
             Response response = client.newCall(request).execute();
             body = response.body().string();
@@ -78,5 +83,17 @@ public class PassageQuery implements SlackRelayService {
 
     public String getPath() {
         return path;
+    }
+
+    public Map<String, String> getParams() {
+        return params;
+    }
+
+    private String convertParams(Map<String, String> paramMap) {
+        String rv = "";
+        for (String key : paramMap.keySet()) {
+            rv += "&" + key + "=" + paramMap.get(key);
+        }
+        return rv;
     }
 }

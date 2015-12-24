@@ -3,6 +3,9 @@ package com.lightsperfections.slackrelay;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import com.lightsperfections.slackrelay.services.Unimplemented;
 import com.lightsperfections.slackrelay.services.esv.PassageQuery;
+
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,10 +46,33 @@ public class SlackRelayConfig {
     @Value("passageQuery")
     private String esvPassageQueryPath;
 
+    @Value("")
+    private String esvPassageQueryParams;
+
+    @Bean(name="esvPassageQueryParams")
+    public Map<String,String> getEsvPassageQueryParams() {
+        Map<String, String> rv = new HashMap<String, String>();
+        rv.put("output-format", "plain-text");
+        rv.put("include-passage-references", "true");
+        rv.put("include-first-verse-numbers", "false");
+        rv.put("include-verse-numbers", "false");
+        rv.put("include-footnotes", "false");
+        rv.put("include-short-copyright", "false");
+        rv.put("include-copyright", "false");
+        rv.put("include-passage-horizontal-lines", "true");
+        rv.put("include-heading-horizontal-lines", "true");
+        rv.put("include-headings", "true");
+        rv.put("include-subheadings", "true");
+        rv.put("include-selahs", "true");
+        rv.put("include-content-type", "true");
+        rv.put("line-length", "0");
+        return (rv);
+    }
+
     @Bean(name="passagequery")
     @Primary
     public SlackRelayService getPassageQueryService() {
-        return new PassageQuery("ESV Passage Query", esvBaseUrl, esvPassageQueryPath);
+        return new PassageQuery("ESV Passage Query", esvBaseUrl, esvPassageQueryPath, getEsvPassageQueryParams());
     }
 
     @Bean(name="unimplemented")
