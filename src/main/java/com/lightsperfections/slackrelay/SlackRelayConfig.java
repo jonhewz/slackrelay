@@ -2,6 +2,7 @@ package com.lightsperfections.slackrelay;
 
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import com.lightsperfections.slackrelay.services.Unimplemented;
+import com.lightsperfections.slackrelay.services.esv.Help;
 import com.lightsperfections.slackrelay.services.esv.PassageQuery;
 
 import java.util.HashMap;
@@ -79,6 +80,11 @@ public class SlackRelayConfig {
     @Bean(name="unimplemented")
     public SlackRelayService getUnimplementedService() {
         return new Unimplemented();
+    }
+
+    @Bean(name="help")
+    public SlackRelayService getHelpService() {
+        return new Help("ESV Help");
     }
 
     @Bean

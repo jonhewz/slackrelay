@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.StringTokenizer;
+
 
 /**
  * SlackCommandController is intended to be called by Slack slash commands, as documented here:
@@ -107,17 +109,21 @@ public class SlackCommandController {
         SlackRelayService service;
 
         // Try to find a more specific service
-        int tokenLocation = text.indexOf(" ");
-        String subcommand = text.substring(0, tokenLocation == -1 ? 0 : tokenLocation);
-        if (subcommand.length() > 0) {
+        text = text.trim();
+        String[] tokens = text.split("\\s");
+        if (tokens.length > 0) {
+            String subcommand = tokens[0];
 
             // Try to get the service with the NAME of the provided subcommand. If that doesn't work,
             // use the unimplemented service to correctly bubble-up the problem
             try {
                 service = context.getBean(subcommand.toLowerCase(), SlackRelayService.class);
 
-                // Peel the subcommand out of "text", and proceed
-                text = text.substring(tokenLocation);
+                // Reconstitute the tokens back into the text field (minus subcommand), and proceed
+                text = "";
+                for (int i = 1; i < tokens.length; i++) {
+                    text += tokens[i] + (i <= tokens.length ? " " : "");
+                }
 
             } catch (NoSuchBeanDefinitionException e) {
                 service = context.getBean(SlackRelayService.class);
