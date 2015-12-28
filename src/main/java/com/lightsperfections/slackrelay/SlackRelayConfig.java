@@ -71,18 +71,24 @@ public class SlackRelayConfig {
         return (rv);
     }
 
-    @Bean(name="passagequery")
-    @Primary
-    public SlackRelayService getPassageQueryService() {
-        return new PassageQuery("ESV Passage Query", esvBaseUrl, esvPassageQueryPath, getEsvPassageQueryParams());
-    }
-
     @Bean(name="unimplemented")
     public SlackRelayService getUnimplementedService() {
         return new Unimplemented();
     }
 
-    @Bean(name="help")
+    // ESV Services
+    @Bean(name="esv.passagequery")
+    public SlackRelayService getPassageQueryService() {
+        return new PassageQuery("ESV Passage Query", esvBaseUrl, esvPassageQueryPath, getEsvPassageQueryParams());
+    }
+
+    @Bean(name="esv.help")
+    public SlackRelayService getESVHelpService() {
+        return new Help("ESV Help");
+    }
+
+    // Logos Services
+    @Bean(name="logos.help")
     public SlackRelayService getHelpService() {
         return new Help("ESV Help");
     }

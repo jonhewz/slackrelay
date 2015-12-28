@@ -59,7 +59,7 @@ public class SlackCommandController {
      * @return
      */
     @RequestMapping(value = "/esv", method = RequestMethod.POST)
-    public ResponseEntity<SlackResponse> greeting(
+    public ResponseEntity<SlackResponse> esv(
                            @RequestParam("token") String token,
                            @RequestParam("team_id") String teamId,
                            @RequestParam("team_domain") String teamDomain,
@@ -69,6 +69,108 @@ public class SlackCommandController {
                            @RequestParam("user_name") String userName,
                            @RequestParam("command") String command,
                            @RequestParam("text") String text) {
+
+        // Perform basic authentication
+        ResponseEntity<SlackResponse> authResponse = authenticateRequest(token);
+        if (authResponse != null) {
+            return authResponse;
+        }
+
+        // Parse out optional subcommand. In the example "/esv passageQuery Matthew 5:14", "esv" is
+        // the command, "passageQuery" is the subcommand, and "Matthew 5:14" is what should be passed
+        // into the service.
+        //
+        // However, assuming that passageQuery is the service marked PRIMARY, the user could just
+        // specify "/esv Matthew 5:14" and it should return the results of a passageQuery.
+
+        // Try to find a more specific service
+        SlackRelayService service;
+        text = text.trim().toLowerCase();
+        String[] tokens = text.split("\\s");
+
+        // If no parameters are provided, fall back to HELP
+        if (tokens.length < 1) {
+            service = context.getBean("esv.help", SlackRelayService.class);
+        } else {
+            int firstParamIndex = 1;
+
+            // If the first param is not a valid subcommand assume passageQuery
+            if (!context.isBeanNameInUse("esv." + tokens[0])) {
+                service = context.getBean("esv.passagequery", SlackRelayService.class);
+                firstParamIndex = 0;
+
+            // The first param is a valid command - use that service and pass the rest of the params in
+            } else {
+                service = context.getBean("esv." + tokens[0], SlackRelayService.class);
+            }
+
+            // Reconstitute the tokens back into the text field (minus subcommand), and proceed
+            text = "";
+            for (int i = firstParamIndex; i < tokens.length; i++) {
+                text += tokens[i] + (i <= tokens.length ? " " : "");
+            }
+        }
+
+        return runService(service, text);
+    }
+
+    /**
+     * This is the generic endpoint for all Logos activity. Logos is a set of commands
+     * to support Daily Bible Readings.
+     *
+     * @param token
+     * @param teamId
+     * @param teamDomain
+     * @param channelId
+     * @param channelName
+     * @param userId
+     * @param userName
+     * @param command
+     * @param text
+     * @return
+     */
+    @RequestMapping(value = "/logos", method = RequestMethod.POST)
+    public ResponseEntity<SlackResponse> logos(
+            @RequestParam("token") String token,
+            @RequestParam("team_id") String teamId,
+            @RequestParam("team_domain") String teamDomain,
+            @RequestParam("channel_id") String channelId,
+            @RequestParam("channel_name") String channelName,
+            @RequestParam("user_id") String userId,
+            @RequestParam("user_name") String userName,
+            @RequestParam("command") String command,
+            @RequestParam("text") String text) {
+
+        // Perform basic authentication
+        ResponseEntity<SlackResponse> authResponse = authenticateRequest(token);
+        if (authResponse != null) {
+            return authResponse;
+        }
+
+        // Try to find a more specific service
+        SlackRelayService service;
+        text = text.trim().toLowerCase();
+        String[] tokens = text.split("\\s");
+
+        // If no subcommand is provided, or one is provided that's not a registered
+        // service, fall back to HELP
+        if (tokens.length < 1 || !context.isBeanNameInUse("logos." + tokens[0])) {
+            service = context.getBean("logos.help", SlackRelayService.class);
+        } else {
+            service = context.getBean("logos." + tokens[0], SlackRelayService.class);
+        }
+
+        return runService(service, usernName, text);
+    }
+
+
+    /**
+     * Helper method to abstract out authentication details.
+     * @param token
+     * @return
+     */
+    private ResponseEntity<SlackResponse> authenticateRequest(String token) {
+        ResponseEntity<SlackResponse> responseEntity = null;
 
         // Authenticate based on Slack Token. This can be expanded to allow multiple tokens or to
         // authenticate on any of the other pieces of data sent by Slack. But for now, simple.
@@ -81,7 +183,7 @@ public class SlackCommandController {
                         SlackResponse.createPrivate("Authorization misconfiguration"),
                         HttpStatus.INTERNAL_SERVER_ERROR);
 
-            // Client error - token mismatch
+                // Client error - token mismatch
             } else if (!authorizedSlackToken.equalsIgnoreCase(token)) {
                 return new ResponseEntity<SlackResponse>(
                         SlackResponse.createPrivate("Authorization denied for provided token"),
@@ -95,50 +197,23 @@ public class SlackCommandController {
                     SlackResponse.createPrivate("Authorization unconfigured"),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return responseEntity;
+    }
 
 
+    /**
+     * Helper method to abstract out the logic of Exception handling.
+     * @param service
+     * @param text
+     * @return
+     */
+    private ResponseEntity<SlackResponse> runService(SlackRelayService service, String userName, String text) {
 
-        // Parse out optional subcommand. In the example "/esv passageQuery Matthew 5:14", "esv" is
-        // the command, "passageQuery" is the subcommand, and "Matthew 5:14" is what should be passed
-        // into the service.
-        //
-        // However, assuming that passageQuery is the service marked PRIMARY, the user could just
-        // specify "/esv Matthew 5:14" and it should return the results of a passageQuery.
-
-        // Initialize to default service
-        SlackRelayService service;
-
-        // Try to find a more specific service
-        text = text.trim();
-        String[] tokens = text.split("\\s");
-        if (tokens.length > 0) {
-            String subcommand = tokens[0];
-
-            // Try to get the service with the NAME of the provided subcommand. If that doesn't work,
-            // use the unimplemented service to correctly bubble-up the problem
-            try {
-                service = context.getBean(subcommand.toLowerCase(), SlackRelayService.class);
-
-                // Reconstitute the tokens back into the text field (minus subcommand), and proceed
-                text = "";
-                for (int i = 1; i < tokens.length; i++) {
-                    text += tokens[i] + (i <= tokens.length ? " " : "");
-                }
-
-            } catch (NoSuchBeanDefinitionException e) {
-                service = context.getBean(SlackRelayService.class);
-            }
-        } else {
-            service = context.getBean(SlackRelayService.class);
-        }
-
-
-        
         // The relayed request can fail because the dependent service is having problems, or because _this_
         // application has bugs. Trying to be helpful in diagnosing the problem.
         String responseText;
         try {
-            responseText = service.performAction(text);
+            responseText = service.performAction(userName, text);
         } catch (DependentServiceException e) {
             return new ResponseEntity<SlackResponse> (
                     SlackResponse.createPrivate(service.getName() + " failed."),
