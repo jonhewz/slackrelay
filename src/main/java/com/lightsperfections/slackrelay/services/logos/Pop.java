@@ -39,3 +39,54 @@ public class Pop implements SlackRelayService {
 
 
 }
+
+/**
+ Scratchpad
+
+ A Plan can internally  pointers
+
+ Static fully exploded circular linked lists
+
+ Plan = List<Tracks>
+
+ Track =
+ List<Books>
+ Frequency
+
+ Book =
+ name
+ numChapters
+
+
+ Database Tables:
+
+ BookCounter
+ -----------
+ User -> | Genesis:1
+         | Exodus:2
+
+ ReadingPlan
+ -----------
+ User -> | PlanName: blah
+         | Indexes: 1,5,14,9...
+         | DateStarted: 2015-5-12
+
+ Statistics
+ ----------
+ User -> | BeginDate: 2015-5-12 (for rate calculations)
+         | TotalChapters: 12
+         | MostInADay: 30
+         | MostInADayDate: 2015-2-2
+         | LongestStreak: 12
+         | LongestStreakStartDate: 2015-2-3
+         | LastMonthDailyAverage:
+
+
+
+
+
+
+
+
+
+ */
