@@ -86,10 +86,10 @@ public class SlackCommandController {
         // Try to find a more specific service
         SlackRelayService service;
         text = text.trim().toLowerCase();
-        String[] tokens = text.split("\\s");
+        String[] tokens = text.split("\\s+");
 
         // If no parameters are provided, fall back to HELP
-        if (tokens.length < 1) {
+        if (tokens.length == 1 && "".equals(tokens[0])) {
             service = context.getBean("esv.help", SlackRelayService.class);
         } else {
             int firstParamIndex = 1;
@@ -107,11 +107,11 @@ public class SlackCommandController {
             // Reconstitute the tokens back into the text field (minus subcommand), and proceed
             text = "";
             for (int i = firstParamIndex; i < tokens.length; i++) {
-                text += tokens[i] + (i <= tokens.length ? " " : "");
+                text += tokens[i] + (i < tokens.length - 1 ? " " : "");
             }
         }
 
-        return runService(service, text);
+        return runService(service, userName, text);
     }
 
     /**
@@ -150,17 +150,17 @@ public class SlackCommandController {
         // Try to find a more specific service
         SlackRelayService service;
         text = text.trim().toLowerCase();
-        String[] tokens = text.split("\\s");
+        String[] tokens = text.split("\\s+");
 
         // If no subcommand is provided, or one is provided that's not a registered
         // service, fall back to HELP
-        if (tokens.length < 1 || !context.isBeanNameInUse("logos." + tokens[0])) {
+        if ("".equals(tokens[0]) || !context.isBeanNameInUse("logos." + tokens[0])) {
             service = context.getBean("logos.help", SlackRelayService.class);
         } else {
             service = context.getBean("logos." + tokens[0], SlackRelayService.class);
         }
 
-        return runService(service, usernName, text);
+        return runService(service, userName, text);
     }
 
 

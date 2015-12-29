@@ -10,7 +10,7 @@ public class Unimplemented implements SlackRelayService {
     @Override
     public String getName() { return "Unimplemented"; }
     @Override
-    public String performAction(String userText) {
+    public String performAction(String userName, String userText) {
         return getName();
     }
 }

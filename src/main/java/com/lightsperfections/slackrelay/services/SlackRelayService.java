@@ -8,7 +8,6 @@ package com.lightsperfections.slackrelay.services;
  */
 public interface SlackRelayService {
     public String getName();
-    public String getUserName();
     public String performAction(String userName, String userText)
             throws DependentServiceException, InternalImplementationException;
 }

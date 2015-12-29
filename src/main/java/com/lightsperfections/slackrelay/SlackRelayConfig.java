@@ -2,11 +2,12 @@ package com.lightsperfections.slackrelay;
 
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import com.lightsperfections.slackrelay.services.Unimplemented;
-import com.lightsperfections.slackrelay.services.esv.Help;
 import com.lightsperfections.slackrelay.services.esv.PassageQuery;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.lightsperfections.slackrelay.services.logos.Pop;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +35,7 @@ public class SlackRelayConfig {
 
     // ESV API will need a developer key to be passed along with requests. Specify
     // as a jvm arg. i.e. --esv.key=abc123
-    @Value("#{ systemProperties['esv.key'] ?: 'TEST' }")
+    @Value("#{ systemProperties['esv.key'] ?: 'IP' }")
     private String esvKey;
 
     @Bean(name="esvKey")
@@ -84,13 +85,18 @@ public class SlackRelayConfig {
 
     @Bean(name="esv.help")
     public SlackRelayService getESVHelpService() {
-        return new Help("ESV Help");
+        return new com.lightsperfections.slackrelay.services.esv.Help("ESV Help");
     }
 
     // Logos Services
     @Bean(name="logos.help")
+    public SlackRelayService getLOGOSHelpService() {
+        return new com.lightsperfections.slackrelay.services.logos.Help("LOGOS Help");
+    }
+
+    @Bean(name="logos.pop")
     public SlackRelayService getHelpService() {
-        return new Help("ESV Help");
+        return new Pop("LOGOS Pop");
     }
 
     @Bean

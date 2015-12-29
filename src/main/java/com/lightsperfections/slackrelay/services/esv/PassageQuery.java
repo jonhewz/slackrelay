@@ -7,6 +7,8 @@ import com.lightsperfections.slackrelay.services.SlackRelayService;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -20,6 +22,8 @@ import java.util.Map;
  * Time: 3:27 PM
  */
 public class PassageQuery implements SlackRelayService {
+    Logger logger = LoggerFactory.getLogger("SlackCommandController");
+
     private final String name;
     private final String baseUrl;
     private final String path;
@@ -44,7 +48,8 @@ public class PassageQuery implements SlackRelayService {
      * @throws InternalImplementationException
      */
     @Override
-    public String performAction(String userText) throws DependentServiceException, InternalImplementationException {
+    public String performAction(String userName, String userText)
+            throws DependentServiceException, InternalImplementationException {
 
         AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext(SlackRelayConfig.class);
@@ -53,6 +58,8 @@ public class PassageQuery implements SlackRelayService {
         try {
             String url = getBaseUrl() + getPath() + "?key=" + context.getBean("esvKey") + convertParams(getParams()) +
                     "&passage=" + userText;
+
+            logger.debug("Issuing ESV API GET Request to: " + url);
 
             Request request = new Request.Builder().url(url).build();
 

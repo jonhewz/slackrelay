@@ -4,7 +4,7 @@ import groovy.transform.Field
 import groovyx.net.http.RESTClient
 import groovyx.net.http.HTTPBuilder
 import static groovyx.net.http.ContentType.URLENC
-import groovyx.net.http.ContentType.*
+import static groovyx.net.http.ContentType.TEXT
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Value
@@ -24,7 +24,7 @@ import spock.lang.Specification;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = SpringApplicationContextLoader, classes = Application.class)
 @WebAppConfiguration
-@IntegrationTest(["server.port=9000", "slack.token=TEST"])
+@IntegrationTest(["server.port=9000"])
 public class ESVSpec extends Specification {
 
     @Value("\${server.port}")
@@ -118,6 +118,202 @@ public class ESVSpec extends Specification {
         then:
         with(resp) {
             status == 400
+        }
+    }
+
+    @Test
+    def "ESV passageQuery case-insensitivity" () {
+        setup:
+        def partialParamMap = [token: 'TEST',
+                               team_id: 'teamId',
+                               team_domain: 'teamDomain',
+                               channel_id: 'channelId',
+                               channel_name: 'channelName',
+                               user_id: 'userId',
+                               user_name: 'userName',
+                               command: 'command',
+                               text: 'PASSAGEQUERY 1 thessalonians 5:21' ]
+
+        def client = new RESTClient( "http://localhost:$port/" )
+        client.handler.failure = client.handler.success
+        when:
+        def resp = client.post(
+                path: 'esv',
+                body: partialParamMap,
+                requestContentType:URLENC
+        )
+        then:
+        with(resp) {
+            status == 200
+            data.text.contains('test everything; hold fast')
+        }
+    }
+
+    @Test
+    def "ESV passageQuery default to passagequery" () {
+        setup:
+        def partialParamMap = [token: 'TEST',
+                               team_id: 'teamId',
+                               team_domain: 'teamDomain',
+                               channel_id: 'channelId',
+                               channel_name: 'channelName',
+                               user_id: 'userId',
+                               user_name: 'userName',
+                               command: 'command',
+                               text: ' 1 thessalonians 5:21  ' ]
+
+        def client = new RESTClient( "http://localhost:$port/" )
+        client.handler.failure = client.handler.success
+        when:
+        def resp = client.post(
+                path: 'esv',
+                body: partialParamMap,
+                requestContentType:URLENC
+        )
+        then:
+        with(resp) {
+            status == 200
+            data.text.contains('test everything; hold fast')
+        }
+    }
+
+    @Test
+    def "ESV with no params defaults to HELP" () {
+        setup:
+        def partialParamMap = [token: 'TEST',
+                               team_id: 'teamId',
+                               team_domain: 'teamDomain',
+                               channel_id: 'channelId',
+                               channel_name: 'channelName',
+                               user_id: 'userId',
+                               user_name: 'userName',
+                               command: 'command',
+                               text: ' ' ]
+
+        def client = new RESTClient( "http://localhost:$port/" )
+        client.handler.failure = client.handler.success
+        when:
+        def resp = client.post(
+                path: 'esv',
+                body: partialParamMap,
+                requestContentType:URLENC
+        )
+        then:
+        with(resp) {
+            status == 200
+            data.text.contains('ESV Help')
+        }
+    }
+
+    @Test
+    def "ESV with invalid reference " () {
+        setup:
+        def partialParamMap = [token: 'TEST',
+                               team_id: 'teamId',
+                               team_domain: 'teamDomain',
+                               channel_id: 'channelId',
+                               channel_name: 'channelName',
+                               user_id: 'userId',
+                               user_name: 'userName',
+                               command: 'command',
+                               text: 'enoch 1 ' ]
+
+        def client = new RESTClient( "http://localhost:$port/" )
+        client.handler.failure = client.handler.success
+        when:
+        def resp = client.post(
+                path: 'esv',
+                body: partialParamMap,
+                requestContentType:URLENC
+        )
+        then:
+        with(resp) {
+            status == 200
+            data.text.contains('No passage found for your query')
+        }
+    }
+
+    @Test
+    def "Logos with no params defaults to HELP " () {
+        setup:
+        def partialParamMap = [token: 'TEST',
+                               team_id: 'teamId',
+                               team_domain: 'teamDomain',
+                               channel_id: 'channelId',
+                               channel_name: 'channelName',
+                               user_id: 'userId',
+                               user_name: 'userName',
+                               command: 'command',
+                               text: '' ]
+
+        def client = new RESTClient( "http://localhost:$port/" )
+        client.handler.failure = client.handler.success
+        when:
+        def resp = client.post(
+                path: 'logos',
+                body: partialParamMap,
+                requestContentType:URLENC
+        )
+        then:
+        with(resp) {
+            status == 200
+            data.text.contains('LOGOS Help')
+        }
+    }
+
+    @Test
+    def "Logos with a single bogus param defaults to HELP " () {
+        setup:
+        def partialParamMap = [token: 'TEST',
+                               team_id: 'teamId',
+                               team_domain: 'teamDomain',
+                               channel_id: 'channelId',
+                               channel_name: 'channelName',
+                               user_id: 'userId',
+                               user_name: 'userName',
+                               command: 'command',
+                               text: 'boop' ]
+
+        def client = new RESTClient( "http://localhost:$port/" )
+        client.handler.failure = client.handler.success
+        when:
+        def resp = client.post(
+                path: 'logos',
+                body: partialParamMap,
+                requestContentType:URLENC
+        )
+        then:
+        with(resp) {
+            status == 200
+            data.text.contains('LOGOS Help')
+        }
+    }
+
+    @Test
+    def "LOGOS pop successfully pops " () {
+        setup:
+        def partialParamMap = [token: 'TEST',
+                               team_id: 'teamId',
+                               team_domain: 'teamDomain',
+                               channel_id: 'channelId',
+                               channel_name: 'channelName',
+                               user_id: 'userId',
+                               user_name: 'userName',
+                               command: 'command',
+                               text: 'pop' ]
+
+        def client = new RESTClient( "http://localhost:$port/" )
+        client.handler.failure = client.handler.success
+        when:
+        def resp = client.post(
+                path: 'logos',
+                body: partialParamMap,
+                requestContentType:URLENC
+        )
+        then:
+        with(resp) {
+            status == 200
+            data.text.contains('POP!')
         }
     }
 }

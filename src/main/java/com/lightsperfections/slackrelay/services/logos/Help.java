@@ -26,7 +26,8 @@ public class Help implements SlackRelayService {
      * @throws InternalImplementationException
      */
     @Override
-    public String performAction(String userText) throws DependentServiceException, InternalImplementationException {
+    public String performAction(String userName, String userText)
+            throws DependentServiceException, InternalImplementationException {
         return
                 "LOGOS Help\n" +
                 "----------\n" +

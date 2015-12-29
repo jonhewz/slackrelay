@@ -29,13 +29,15 @@ public class Help implements SlackRelayService {
     /**
      * Display usage
      *
+     * @param userName
      * @param userText
      * @return
      * @throws DependentServiceException
      * @throws InternalImplementationException
      */
     @Override
-    public String performAction(String userText) throws DependentServiceException, InternalImplementationException {
+    public String performAction(String userName, String userText)
+            throws DependentServiceException, InternalImplementationException {
         return
                 "ESV Help\n" +
                 "--------\n" +
