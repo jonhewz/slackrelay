@@ -38,10 +38,18 @@
             <version>1.0.0.m3</version>
         </dependency>
 
+        <!-- https://square.github.io/okhttp/2.x/okhttp/index.html -->
         <dependency>
             <groupId>com.squareup.okhttp</groupId>
             <artifactId>okhttp</artifactId>
             <version>2.7.0</version>
+        </dependency>
+
+        <!-- http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/AboutJava.html -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk</artifactId>
+            <version>1.10.43</version>
         </dependency>
 
         <!-- http://docs.groovy-lang.org/docs/groovy-2.4.5/html/documentation/ -->

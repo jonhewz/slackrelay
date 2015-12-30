@@ -1,17 +1,8 @@
 package com.lightsperfections.slackrelay.services.esv;
 
-import com.lightsperfections.slackrelay.SlackRelayConfig;
 import com.lightsperfections.slackrelay.services.DependentServiceException;
 import com.lightsperfections.slackrelay.services.InternalImplementationException;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.io.IOException;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.

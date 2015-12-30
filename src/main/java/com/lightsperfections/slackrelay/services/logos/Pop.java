@@ -1,8 +1,11 @@
 package com.lightsperfections.slackrelay.services.logos;
 
+import com.lightsperfections.slackrelay.SlackRelayConfig;
+import com.lightsperfections.slackrelay.dao.ReadingPlanBookmarkDao;
 import com.lightsperfections.slackrelay.services.DependentServiceException;
 import com.lightsperfections.slackrelay.services.InternalImplementationException;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,6 +14,7 @@ import com.lightsperfections.slackrelay.services.SlackRelayService;
  * Time: 3:27 PM
  */
 public class Pop implements SlackRelayService {
+
     private final String name;
 
     public Pop(String name) {
@@ -29,7 +33,11 @@ public class Pop implements SlackRelayService {
     @Override
     public String performAction(String userName, String userText)
             throws DependentServiceException, InternalImplementationException {
-        return "POP!";
+
+        AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(SlackRelayConfig.class);
+        ReadingPlanBookmarkDao readingPlanBookmarkDao = context.getBean(ReadingPlanBookmarkDao.class);
+        return readingPlanBookmarkDao.findByUserName(userName).toString();
 
     }
 

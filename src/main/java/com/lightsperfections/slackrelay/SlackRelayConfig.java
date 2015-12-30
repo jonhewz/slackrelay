@@ -1,18 +1,18 @@
 package com.lightsperfections.slackrelay;
 
+import com.lightsperfections.slackrelay.dao.ReadingPlanBookmarkDao;
+import com.lightsperfections.slackrelay.dao.dynamodb.DynamoDBReadingPlanBookmarkDao;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import com.lightsperfections.slackrelay.services.Unimplemented;
 import com.lightsperfections.slackrelay.services.esv.PassageQuery;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import com.lightsperfections.slackrelay.services.logos.Pop;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,6 +22,16 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
  */
 @Configuration
 public class SlackRelayConfig {
+
+    @Bean
+    public CommonsRequestLoggingFilter requestLoggingFilter() {
+        CommonsRequestLoggingFilter crlf = new CommonsRequestLoggingFilter();
+        crlf.setIncludeClientInfo(true);
+        crlf.setIncludeQueryString(true);
+        crlf.setIncludePayload(true);
+        crlf.setMaxPayloadLength(500);
+        return crlf;
+    }
 
     // Not any slack account can connect up. Specify the single token allowed as
     // a jvm arg. i.e. --slack.token=abc123
@@ -90,22 +100,20 @@ public class SlackRelayConfig {
 
     // Logos Services
     @Bean(name="logos.help")
-    public SlackRelayService getLOGOSHelpService() {
+    public SlackRelayService getLogosHelpService() {
         return new com.lightsperfections.slackrelay.services.logos.Help("LOGOS Help");
     }
 
     @Bean(name="logos.pop")
-    public SlackRelayService getHelpService() {
+    public SlackRelayService getLogosPopService() {
         return new Pop("LOGOS Pop");
     }
 
+    // DAOs
+
     @Bean
-    public CommonsRequestLoggingFilter requestLoggingFilter() {
-        CommonsRequestLoggingFilter crlf = new CommonsRequestLoggingFilter();
-        crlf.setIncludeClientInfo(true);
-        crlf.setIncludeQueryString(true);
-        crlf.setIncludePayload(true);
-        crlf.setMaxPayloadLength(500);
-        return crlf;
+    public ReadingPlanBookmarkDao getReadingPlanBookmarkDao() {
+        return new DynamoDBReadingPlanBookmarkDao();
     }
+
 }

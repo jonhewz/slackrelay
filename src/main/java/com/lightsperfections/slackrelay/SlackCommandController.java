@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.StringTokenizer;
-
 
 /**
  * SlackCommandController is intended to be called by Slack slash commands, as documented here:
@@ -35,9 +33,9 @@ import java.util.StringTokenizer;
 
 @RestController
 public class SlackCommandController {
-    Logger logger = LoggerFactory.getLogger("SlackCommandController");
+    private Logger logger = LoggerFactory.getLogger("SlackCommandController");
 
-    AnnotationConfigApplicationContext context =
+    private AnnotationConfigApplicationContext context =
             new AnnotationConfigApplicationContext(SlackRelayConfig.class);
 
     /**
