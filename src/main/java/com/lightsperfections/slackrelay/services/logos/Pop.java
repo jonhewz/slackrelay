@@ -5,7 +5,9 @@ import com.lightsperfections.slackrelay.dao.ReadingPlanBookmarkDao;
 import com.lightsperfections.slackrelay.services.DependentServiceException;
 import com.lightsperfections.slackrelay.services.InternalImplementationException;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
+import com.lightsperfections.slackrelay.beans.ReadingPlanBookmark;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,7 +39,8 @@ public class Pop implements SlackRelayService {
         AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext(SlackRelayConfig.class);
         ReadingPlanBookmarkDao readingPlanBookmarkDao = context.getBean(ReadingPlanBookmarkDao.class);
-        return readingPlanBookmarkDao.findByUserName(userName).toString();
+        ReadingPlanBookmark readingPlanBookmark = readingPlanBookmarkDao.findByUserName((userName));
+        return readingPlanBookmark == null ? "" : readingPlanBookmark.toString();
 
     }
 

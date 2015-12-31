@@ -6,6 +6,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.lightsperfections.slackrelay.beans.ReadingPlanBookmark;
 import com.lightsperfections.slackrelay.beans.dynamodb.DynamoDBReadingPlanBookmark;
 import com.lightsperfections.slackrelay.dao.ReadingPlanBookmarkDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,12 +17,19 @@ import com.lightsperfections.slackrelay.dao.ReadingPlanBookmarkDao;
  */
 public class DynamoDBReadingPlanBookmarkDao implements ReadingPlanBookmarkDao {
 
+    private Logger logger = LoggerFactory.getLogger("DynamoDBReadingPlanBookmarkDao");
+
     static AmazonDynamoDBClient client = new AmazonDynamoDBClient(new ProfileCredentialsProvider());
 
     @Override
     public ReadingPlanBookmark findByUserName(String userName) {
+        long startTime = System.currentTimeMillis();
+
         DynamoDBMapper mapper = new DynamoDBMapper(client);
-        return mapper.load(DynamoDBReadingPlanBookmark.class, userName);
+        ReadingPlanBookmark readingPlanBookmark = mapper.load(DynamoDBReadingPlanBookmark.class, userName);
+
+        logger.debug("findByUserName(" + userName + ") took " + (System.currentTimeMillis() - startTime) + "ms.");
+        return readingPlanBookmark;
     }
 
     @Override

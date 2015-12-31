@@ -26,7 +26,7 @@ public class DynamoDBReadingPlanBookmark implements ReadingPlanBookmark {
     private LocalDateTime startDate;
 
     @Override
-    @DynamoDBHashKey(attributeName="User")
+    @DynamoDBHashKey(attributeName="UserName")
     public String getUserName() {
         return userName;
     }
