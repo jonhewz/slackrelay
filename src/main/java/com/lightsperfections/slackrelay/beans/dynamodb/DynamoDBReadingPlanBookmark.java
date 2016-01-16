@@ -1,8 +1,6 @@
 package com.lightsperfections.slackrelay.beans.dynamodb;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.lightsperfections.slackrelay.beans.ReadingPlanBookmark;
 
 import java.time.LocalDateTime;
@@ -60,6 +58,7 @@ public class DynamoDBReadingPlanBookmark implements ReadingPlanBookmark {
 
     @Override
     @DynamoDBAttribute(attributeName = "StartDate")
+    @DynamoDBMarshalling(marshallerClass = LocalDateTimeConverter.class)
     public LocalDateTime getStartDate() {
         return startDate;
     }
@@ -70,8 +69,21 @@ public class DynamoDBReadingPlanBookmark implements ReadingPlanBookmark {
     }
 
     public String toString() {
-        return "ReadingPlan [userName=" + userName + "planName=" + planName + ", trackIndexes=" + trackIndexes
+        return "ReadingPlan [userName=" + userName + ", planName=" + planName + ", trackIndexes=" + trackIndexes
                 + ", startDate=" + startDate + "]";
+    }
+
+    static public class LocalDateTimeConverter implements DynamoDBMarshaller<LocalDateTime> {
+
+        @Override
+        public String marshall(LocalDateTime time) {
+            return time.toString();
+        }
+
+        @Override
+        public LocalDateTime unmarshall(Class<LocalDateTime> dimensionType, String stringValue) {
+            return LocalDateTime.parse(stringValue);
+        }
     }
 
 }

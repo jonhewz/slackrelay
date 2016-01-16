@@ -40,7 +40,8 @@ public class Pop implements SlackRelayService {
                 new AnnotationConfigApplicationContext(SlackRelayConfig.class);
         ReadingPlanBookmarkDao readingPlanBookmarkDao = context.getBean(ReadingPlanBookmarkDao.class);
         ReadingPlanBookmark readingPlanBookmark = readingPlanBookmarkDao.findByUserName((userName));
-        return readingPlanBookmark == null ? "" : readingPlanBookmark.toString();
+        //return readingPlanBookmark == null ? "" : readingPlanBookmark.toString();
+        return "POP!";
 
     }
 

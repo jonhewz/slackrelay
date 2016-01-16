@@ -6,6 +6,7 @@ import com.lightsperfections.slackrelay.services.SlackRelayService;
 import com.lightsperfections.slackrelay.services.Unimplemented;
 import com.lightsperfections.slackrelay.services.esv.PassageQuery;
 import com.lightsperfections.slackrelay.services.logos.Pop;
+import com.lightsperfections.slackrelay.services.logos.Set;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -107,6 +108,11 @@ public class SlackRelayConfig {
     @Bean(name="logos.pop")
     public SlackRelayService getLogosPopService() {
         return new Pop("LOGOS Pop");
+    }
+
+    @Bean(name="logos.set")
+    public SlackRelayService getLogosSetService() {
+        return new Set("LOGOS Set");
     }
 
     // DAOs

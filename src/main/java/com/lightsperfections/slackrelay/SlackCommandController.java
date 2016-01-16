@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+
 
 /**
  * SlackCommandController is intended to be called by Slack slash commands, as documented here:
@@ -156,6 +158,12 @@ public class SlackCommandController {
             service = context.getBean("logos.help", SlackRelayService.class);
         } else {
             service = context.getBean("logos." + tokens[0], SlackRelayService.class);
+        }
+
+        // Reconstitute the tokens back into the text field (minus subcommand), and proceed
+        text = "";
+        for (int i = 1; i < tokens.length; i++) {
+            text += tokens[i] + (i < tokens.length - 1 ? " " : "");
         }
 
         return runService(service, userName, text);

@@ -9,6 +9,9 @@ import com.lightsperfections.slackrelay.dao.ReadingPlanBookmarkDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jhughes
@@ -38,4 +41,15 @@ public class DynamoDBReadingPlanBookmarkDao implements ReadingPlanBookmarkDao {
         mapper.save(readingPlanBookmark);
     }
 
+    @Override
+    public ReadingPlanBookmark createReadingPlanBookmark(String userName, String planName, List<Integer> trackIndexes, LocalDateTime startDate) {
+        ReadingPlanBookmark readingPlanBookmark = new DynamoDBReadingPlanBookmark();
+        readingPlanBookmark.setUserName(userName);
+        readingPlanBookmark.setPlanName(planName);
+        readingPlanBookmark.setTrackIndexes(trackIndexes);
+        readingPlanBookmark.setStartDate(startDate);
+
+        updateReadingPlanBookmark(readingPlanBookmark);
+        return readingPlanBookmark;
+    }
 }
