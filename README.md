@@ -32,9 +32,9 @@ of his groups where he would read more than a chapter from that group before mov
 of configurability that is worth adding.
 
 User chats with a Daily Reading bot in slack. It is not a public conversation. They can give the bot several commands:
-    1. `/logos pop` - get the next passage
-    1. `/logos push` - mark the most recent passage as unread
-    1. `/logos ff [n]` - fast-forward n passages (but still track them) 
-    1. `/logos set [plan_name|bookmark_indexes]` - choose a reading plan, or set the bookmark indexes for your current plan
-    1. `/logos status` - progress info
-    1. `/logos plan` - plan info
+1. `/logos pop` - get the next passage
+1. `/logos push` - mark the most recent passage as unread
+1. `/logos ff [n]` - fast-forward n passages (but still track them) 
+1. `/logos set [plan_name|bookmark_indexes]` - choose a reading plan, or set the bookmark indexes for your current plan
+1. `/logos status` - progress info
+1. `/logos plan` - plan info
