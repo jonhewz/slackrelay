@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * This will initialize all tracks to the beginning, and set the start date to now.
  *
  * Use this service to update the indexes for their existing ReadingPlan.
- *      i.e. /logos set 10 10 10 9 9 9 9 9 9 9
+ *      i.e. /logos set 357
  *
  * Created by jon on 1/15/16.
  */
@@ -42,7 +42,7 @@ public class Set implements SlackRelayService {
                 new AnnotationConfigApplicationContext(SlackRelayConfig.class);
         ReadingPlanBookmarkDao readingPlanBookmarkDao = context.getBean(ReadingPlanBookmarkDao.class);
 
-        // There will either be a non-numeric string plan name, or else a list of one or more integer track indexes.
+        // There will either be a non-numeric string plan name, or else an index.
         userText = userText.trim().toLowerCase();
         String[] tokens = userText.split("\\s+");
 
@@ -50,11 +50,9 @@ public class Set implements SlackRelayService {
         if (tokens.length == 1 && "".equals(tokens[0])) {
             return "You did not provide enough parameters for the 'set' command.";
 
-            // If the only token isn't solely numeric, treat as a plan name
+        // If the only token isn't solely numeric, treat as a plan name
         } else if (tokens.length == 1 && !tokens[0].matches("^[0-9]+$")) {
-            readingPlanBookmarkDao.createReadingPlanBookmark(userName, tokens[0],
-                    new ArrayList<Integer>(), LocalDateTime.now());
-
+            readingPlanBookmarkDao.createReadingPlanBookmark(userName, tokens[0], 0, LocalDateTime.now());
             return "Your reading plan was changed to " + tokens[0];
 
         // Otherwise iterate through the token(s) and make a list of indexes
@@ -64,22 +62,15 @@ public class Set implements SlackRelayService {
                 return "You do not have a Reading Plan Bookmark yet. You can not set the indexes.";
             }
 
-            ArrayList<Integer> trackIndexes = new ArrayList<Integer>();
-            for (int i = 0; i < tokens.length; i++) {
-                try {
-                    trackIndexes.add(Integer.valueOf(tokens[i]));
-                } catch (NumberFormatException e) {
-                    return "Indexes are not valid numbers";
-                }
+            try {
+                readingPlanBookmark.setIndex(Integer.valueOf(tokens[0]));
+
+            } catch (NumberFormatException e) {
+                    return "Index is not a valid number";
             }
 
-            if (trackIndexes.size() < 1) {
-                return "Your bookmark track indexes were NOT updated, since they were none provided.";
-            }
-
-            readingPlanBookmark.setTrackIndexes(trackIndexes);
             readingPlanBookmarkDao.updateReadingPlanBookmark(readingPlanBookmark);
-            return "Success! Your bookmark track indexes have been updated to " + trackIndexes.toString();
+            return "Success! Your bookmark track index has been updated to " + readingPlanBookmark.getIndex();
         }
     }
 }

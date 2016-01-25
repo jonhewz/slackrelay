@@ -17,6 +17,10 @@ public class ReadingPlan {
         return name;
     }
 
+    public List<Track> getTracks() {
+        return tracks;
+    }
+
     public void addTrack(Book[] books) {
         addTrack(1, books);
     }
@@ -25,12 +29,5 @@ public class ReadingPlan {
         tracks.add(new Track(frequency, books));
     }
 
-    private class Track {
-        private int frequency;
-        private Book[] books;
-        Track(int frequency, Book[] books) {
-            this.frequency = frequency;
-            this.books = books;
-        }
-    }
+
 }

@@ -14,6 +14,6 @@ import java.util.List;
 public interface ReadingPlanBookmarkDao {
     public ReadingPlanBookmark findByUserName(String userName);
     public void updateReadingPlanBookmark(ReadingPlanBookmark readingPlan);
-    public ReadingPlanBookmark createReadingPlanBookmark(String userName, String planName,
-                                          List<Integer> TrackIndexes, LocalDateTime startDate);
+    public ReadingPlanBookmark createReadingPlanBookmark(String userName, String planName, Integer index,
+                                          LocalDateTime startDate);
 }

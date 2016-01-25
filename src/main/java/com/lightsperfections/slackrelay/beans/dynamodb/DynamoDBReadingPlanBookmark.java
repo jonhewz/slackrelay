@@ -20,7 +20,7 @@ public class DynamoDBReadingPlanBookmark implements ReadingPlanBookmark {
 
     private String userName;
     private String planName;
-    private List<Integer> trackIndexes;
+    private Integer index;
     private LocalDateTime startDate;
 
     @Override
@@ -46,14 +46,14 @@ public class DynamoDBReadingPlanBookmark implements ReadingPlanBookmark {
     }
 
     @Override
-    @DynamoDBAttribute(attributeName="TrackIndexes")
-    public List<Integer> getTrackIndexes() {
-        return trackIndexes;
+    @DynamoDBAttribute(attributeName = "Index")
+    public Integer getIndex() {
+        return index;
     }
 
     @Override
-    public void setTrackIndexes(List<Integer> trackIndexes) {
-        this.trackIndexes = trackIndexes;
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class DynamoDBReadingPlanBookmark implements ReadingPlanBookmark {
     }
 
     public String toString() {
-        return "ReadingPlan [userName=" + userName + ", planName=" + planName + ", trackIndexes=" + trackIndexes
+        return "ReadingPlan [userName=" + userName + ", planName=" + planName + ", index=" + index
                 + ", startDate=" + startDate + "]";
     }
 

@@ -42,9 +42,11 @@ public class DynamoDBReadingPlanBookmarkDao implements ReadingPlanBookmarkDao {
     }
 
     @Override
-    public ReadingPlanBookmark createReadingPlanBookmark(String userName, String planName, List<Integer> trackIndexes, LocalDateTime startDate) {
+    public ReadingPlanBookmark createReadingPlanBookmark(String userName, String planName, Integer currentTrack,
+                                                         List<Integer> trackIndexes, LocalDateTime startDate) {
         ReadingPlanBookmark readingPlanBookmark = new DynamoDBReadingPlanBookmark();
         readingPlanBookmark.setUserName(userName);
+        readingPlanBookmark.setCurrentTrack(currentTrack);
         readingPlanBookmark.setPlanName(planName);
         readingPlanBookmark.setTrackIndexes(trackIndexes);
         readingPlanBookmark.setStartDate(startDate);

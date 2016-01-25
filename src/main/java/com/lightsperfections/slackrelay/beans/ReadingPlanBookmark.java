@@ -17,8 +17,8 @@ public interface ReadingPlanBookmark {
     public String getPlanName();
     public void setPlanName(String planName);
 
-    public List<Integer> getTrackIndexes();
-    public void setTrackIndexes(List<Integer> trackIndexes);
+    public Integer getIndex();
+    public void setIndex(Integer index);
 
     public LocalDateTime getStartDate();
     public void setStartDate(LocalDateTime startDate);
