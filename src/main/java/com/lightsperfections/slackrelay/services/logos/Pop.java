@@ -81,8 +81,7 @@ public class Pop implements SlackRelayService {
 
         // Look up the reference and send it back
         SlackRelayService service = mainContext.getBean("esv.passagequery", SlackRelayService.class);
-        //return service.performAction(userName, reference);
-        return reference;
+        return service.performAction(userName, reference);
     }
 
     /**
