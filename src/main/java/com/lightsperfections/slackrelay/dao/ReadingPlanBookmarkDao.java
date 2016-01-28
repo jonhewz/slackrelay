@@ -1,9 +1,8 @@
 package com.lightsperfections.slackrelay.dao;
 
-import com.lightsperfections.slackrelay.beans.ReadingPlanBookmark;
+import com.lightsperfections.slackrelay.beans.logos.ReadingPlanBookmark;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.

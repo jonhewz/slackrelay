@@ -1,12 +1,15 @@
-package com.lightsperfections.slackrelay.beans;
+package com.lightsperfections.slackrelay.beans.logos;
 
+import com.lightsperfections.slackrelay.beans.Book;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by jon on 1/16/16.
  */
 public class ReadingPlan {
-    private List<Track> tracks;
+    private List<Track> tracks = new ArrayList<Track>();
     private String name;
 
     public ReadingPlan(String name) {
@@ -28,6 +31,8 @@ public class ReadingPlan {
     public void addTrack(int frequency, Book[] books) {
         tracks.add(new Track(frequency, books));
     }
+
+
 
 
 }

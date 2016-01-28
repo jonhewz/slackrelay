@@ -1,4 +1,4 @@
-package com.lightsperfections.slackrelay.beans;
+package com.lightsperfections.slackrelay.beans.logos;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,10 +17,10 @@ public interface ReadingPlanBookmark {
     public String getPlanName();
     public void setPlanName(String planName);
 
-    public Integer getIndex();
-    public void setIndex(Integer index);
-
     public LocalDateTime getStartDate();
     public void setStartDate(LocalDateTime startDate);
+
+    public Integer getIndex();
+    public void setIndex(Integer index);
 
 }

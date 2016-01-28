@@ -90,7 +90,7 @@ public class SlackRelayConfig {
 
     // ESV Services
     @Bean(name="esv.passagequery")
-    public SlackRelayService getPassageQueryService() {
+    public SlackRelayService getESVPassageQueryService() {
         return new PassageQuery("ESV Passage Query", esvBaseUrl, esvPassageQueryPath, getEsvPassageQueryParams());
     }
 

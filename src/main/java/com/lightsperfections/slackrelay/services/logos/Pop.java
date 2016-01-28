@@ -2,15 +2,17 @@ package com.lightsperfections.slackrelay.services.logos;
 
 import com.lightsperfections.slackrelay.ReadingPlanConfig;
 import com.lightsperfections.slackrelay.SlackRelayConfig;
-import com.lightsperfections.slackrelay.beans.Book;
-import com.lightsperfections.slackrelay.beans.ReadingPlan;
-import com.lightsperfections.slackrelay.beans.Track;
+import com.lightsperfections.slackrelay.beans.logos.ReadingPlan;
+import com.lightsperfections.slackrelay.beans.logos.Track;
 import com.lightsperfections.slackrelay.dao.ReadingPlanBookmarkDao;
 import com.lightsperfections.slackrelay.services.DependentServiceException;
 import com.lightsperfections.slackrelay.services.InternalImplementationException;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
-import com.lightsperfections.slackrelay.beans.ReadingPlanBookmark;
+import com.lightsperfections.slackrelay.beans.logos.ReadingPlanBookmark;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -27,6 +29,10 @@ public class Pop implements SlackRelayService {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
     /**
      * Display usage
      *
@@ -41,7 +47,7 @@ public class Pop implements SlackRelayService {
             throws DependentServiceException, InternalImplementationException {
 
         // This context for Database stored bookmark
-        AnnotationConfigApplicationContext bookmarkContext =
+        AnnotationConfigApplicationContext mainContext =
                 new AnnotationConfigApplicationContext(SlackRelayConfig.class);
 
         // This context for Application managed reading plan
@@ -49,7 +55,7 @@ public class Pop implements SlackRelayService {
                 new AnnotationConfigApplicationContext(ReadingPlanConfig.class);
 
         // Get the bookmark for this specific user
-        ReadingPlanBookmarkDao readingPlanBookmarkDao = bookmarkContext.getBean(ReadingPlanBookmarkDao.class);
+        ReadingPlanBookmarkDao readingPlanBookmarkDao = mainContext.getBean(ReadingPlanBookmarkDao.class);
         ReadingPlanBookmark readingPlanBookmark = readingPlanBookmarkDao.findByUserName((userName));
         if (readingPlanBookmark == null) {
             return "No reading plan found for user " + userName;
@@ -61,122 +67,79 @@ public class Pop implements SlackRelayService {
             return "No reading plan exists with the name " + readingPlanBookmark.getPlanName();
         }
 
-        return findReference(readingPlan, readingPlanBookmark);
+        String reference = getReference(readingPlan, readingPlanBookmark.getIndex());
 
+        if (reference == null) {
+            return "No reference could be found at your bookmarked location.";
+        } else {
+
+            // Increment the bookmark
+            readingPlanBookmark.setIndex(readingPlanBookmark.getIndex() + 1);
+            readingPlanBookmarkDao.updateReadingPlanBookmark(readingPlanBookmark);
+
+        }
+
+        // Look up the reference and send it back
+        SlackRelayService service = mainContext.getBean("esv.passagequery", SlackRelayService.class);
+        //return service.performAction(userName, reference);
+        return reference;
     }
-
-    public String getName() {
-        return name;
-    }
-
 
     /**
-     * Consider a plan:
-     * Track 1 = Mark x 2
-     * Track 2 = Philemon, 3 John, Jude x 1
-     *
-     *  i | Passage
-     * ------------
-     * 00 | Mark 1
-     * 01 | Mark 2
-     * 02 | Philemon
-     * 03 | Mark 3
-     * 04 | Mark 4
-     * 05 | 3 John
-     * 06 | Mark 5
-     * 07 | Mark 6
-     * 08 | Jude
-     * 09 | Mark 7
-     * 10 | Mark 8
-     * 11 | Philemon
-     * 12 | Mark 9
-     * 13 | Mark 10
-     * 14 | 3 John
-     * 15 | Mark 11
-     * 16 | Mark 12
-     * 17 | Jude
-     * 18 | Mark 13
-     * 19 | Mark 14
-     * 18 | Philemon
-     * 20 | Mark 15
-     * 21 | Mark 16
-     * 22 | 3 John
-     * 23 | Mark 1
-     * 24 | Mark 2
-     *
-     *
+     * Given a Reading Plan, and an index representing the user's "place" within the plan (how many "pops" in are they),
+     * determine the next reference.
+     * <p/>
+     * I acknowledge that this will slow down over time, but I doubt that it will be so inefficient that computation
+     * time will be noticeable next to network time. The alternative is to store a complex bookmark for the user
+     * representing the list of referenceIndexes, but I prefer this approach to start.
      *
      * @param plan
-     * @param bookmark
+     * @param planIndex
      * @return
      */
-    private static String findReference(ReadingPlan plan, ReadingPlanBookmark bookmark) {
-        int planIndex = 0;
+    private static String getReference(ReadingPlan plan, int planIndex) {
+        // The "global" plan counter, which increments through the references until it catches up with the
+        // desired planIndex (the user's bookmark in the plan)
+        int planCounter = 0;
 
-        for (Track currentTrack : plan.getTracks()) {
-            Book[] books = currentTrack.getBooks();
-            int frequency = currentTrack.getFrequency();
+        // Tracks the current track
+        int trackIndex = 0;
 
-            for (Book book : books) {
-                for (int i = 0; i < frequency; i++) {
-                    for (int i = 1; i <= book.chapterCount; i++) {
-                        if (planIndex++ >= bookmark.getIndex()) {
-                            return book.displayName + " " + i;
-                        }
-                    }
-                }
+        // Keeps the track from incrementing until the track frequency is exhausted
+        int frequencyCounter = 1;
+
+        // Create a per-track list of reference indexes, which correspond one-to-one with the tracks. So
+        // the index marking the current reference in track[n] is held at referenceIndexes[n]
+        List<Track> tracks = plan.getTracks();
+        List<Integer> referenceIndexes = new ArrayList<Integer>();
+        for (Track track : tracks) {referenceIndexes.add(0);}
+
+        // The value to be returned.
+        String reference = null;
+
+
+        // Loop until the planCounter (which increments) catches up with the planIndex (which doesn't).
+        while (planCounter <= planIndex) {
+
+            // Counters will always be in a good state. Fetch reference first, then to the business of incrementing
+            reference = tracks.get(trackIndex).getReferences().get(referenceIndexes.get(trackIndex));
+            planCounter++;
+
+            // Move the referenceIndex up one, or back to the beginning of the List if it's time to loop back.
+            referenceIndexes.set(trackIndex,
+                    referenceIndexes.get(trackIndex) >= tracks.get(trackIndex).getReferences().size() ?
+                            0 : referenceIndexes.get(trackIndex) + 1);
+
+            // If the desired frequency of this track is > 1, keep fetching from this track until
+            // the frequency is exhausted. Once frequency is exhausted move on to the next track.
+            if (frequencyCounter >= tracks.get(trackIndex).getFrequency()) {
+                frequencyCounter = 1;
+                trackIndex = trackIndex >= (tracks.size() - 1) ? 0 : trackIndex + 1;
+            } else {
+                frequencyCounter++;
             }
         }
+        return reference;
     }
 }
 
-/**
- Scratchpad
-
- A Plan can internally  pointers
-
- Static fully exploded circular linked lists
-
- Plan = List<Tracks>
-
- Track =
- List<Books>
- Frequency
-
- Book =
- name
- numChapters
-
-
- Database Tables:
-
- BookCounter
- -----------
- User -> | Genesis:1
-         | Exodus:2
-
- ReadingPlan
- -----------
- User -> | PlanName: blah
-         | Indexes: 1,5,14,9...
-         | DateStarted: 2015-5-12
-
- Statistics
- ----------
- User -> | BeginDate: 2015-5-12 (for rate calculations)
-         | TotalChapters: 12
-         | MostInADay: 30
-         | MostInADayDate: 2015-2-2
-         | LongestStreak: 12
-         | LongestStreakStartDate: 2015-2-3
-         | LastMonthDailyAverage:
-
-
-
-
-
-
-
-
-
- */

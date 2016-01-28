@@ -1,10 +1,9 @@
-package com.lightsperfections.slackrelay.beans.dynamodb;
+package com.lightsperfections.slackrelay.beans.logos.dynamodb;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import com.lightsperfections.slackrelay.beans.ReadingPlanBookmark;
+import com.lightsperfections.slackrelay.beans.logos.ReadingPlanBookmark;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Followed the example here:

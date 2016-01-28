@@ -3,8 +3,8 @@ package com.lightsperfections.slackrelay.dao.dynamodb;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.lightsperfections.slackrelay.beans.ReadingPlanBookmark;
-import com.lightsperfections.slackrelay.beans.dynamodb.DynamoDBReadingPlanBookmark;
+import com.lightsperfections.slackrelay.beans.logos.ReadingPlanBookmark;
+import com.lightsperfections.slackrelay.beans.logos.dynamodb.DynamoDBReadingPlanBookmark;
 import com.lightsperfections.slackrelay.dao.ReadingPlanBookmarkDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,13 +42,12 @@ public class DynamoDBReadingPlanBookmarkDao implements ReadingPlanBookmarkDao {
     }
 
     @Override
-    public ReadingPlanBookmark createReadingPlanBookmark(String userName, String planName, Integer currentTrack,
-                                                         List<Integer> trackIndexes, LocalDateTime startDate) {
+    public ReadingPlanBookmark createReadingPlanBookmark(String userName, String planName, Integer index,
+                                                         LocalDateTime startDate) {
         ReadingPlanBookmark readingPlanBookmark = new DynamoDBReadingPlanBookmark();
         readingPlanBookmark.setUserName(userName);
-        readingPlanBookmark.setCurrentTrack(currentTrack);
         readingPlanBookmark.setPlanName(planName);
-        readingPlanBookmark.setTrackIndexes(trackIndexes);
+        readingPlanBookmark.setIndex(index);
         readingPlanBookmark.setStartDate(startDate);
 
         updateReadingPlanBookmark(readingPlanBookmark);
