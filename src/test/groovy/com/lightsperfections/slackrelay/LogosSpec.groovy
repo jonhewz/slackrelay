@@ -1,10 +1,6 @@
 package com.lightsperfections.slackrelay
 
-import groovy.transform.Field
 import groovyx.net.http.RESTClient
-import groovyx.net.http.HTTPBuilder
-import static groovyx.net.http.ContentType.URLENC
-import static groovyx.net.http.ContentType.TEXT
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Value
@@ -12,8 +8,10 @@ import org.springframework.boot.test.IntegrationTest
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
-import org.springframework.test.context.web.WebAppConfiguration;
-import spock.lang.Specification;
+import org.springframework.test.context.web.WebAppConfiguration
+import spock.lang.Specification
+
+import static groovyx.net.http.ContentType.URLENC
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,7 +23,7 @@ import spock.lang.Specification;
 @ContextConfiguration(loader = SpringApplicationContextLoader, classes = Application.class)
 @WebAppConfiguration
 @IntegrationTest(["server.port=9000"])
-public class ESVSpec extends Specification {
+public class LogosSpec extends Specification {
 
     @Value("\${server.port}")
     private int port;
@@ -36,7 +34,7 @@ public class ESVSpec extends Specification {
         def client = new RESTClient( "http://localhost:$port/" )
         client.handler.failure = client.handler.success
         when:
-        def resp = client.get([ path: 'esv', query : [ input: 'phil' ]])
+        def resp = client.get([ path: 'logos', query : [ input: 'help' ]])
         then:
         with(resp) {
             status == 405
@@ -59,7 +57,7 @@ public class ESVSpec extends Specification {
                         text: 'text']
         when:
         def resp = client.post(
-                path: 'esv',
+                path: 'logos',
                 requestContentType: URLENC,
                 body: paramMap
         )
@@ -85,7 +83,7 @@ public class ESVSpec extends Specification {
                         text: 'text']
         when:
         def resp = client.post(
-                path: 'esv',
+                path: 'logos',
                 requestContentType: URLENC,
                 body: paramMap
         )
@@ -111,7 +109,7 @@ public class ESVSpec extends Specification {
         client.handler.failure = client.handler.success
         when:
         def resp = client.post(
-                path: 'esv',
+                path: 'logos',
                 requestContentType: URLENC,
                 body: partialParamMap
         )
@@ -122,63 +120,7 @@ public class ESVSpec extends Specification {
     }
 
     @Test
-    def "ESV passageQuery case-insensitivity" () {
-        setup:
-        def partialParamMap = [token: 'TEST',
-                               team_id: 'TEST',
-                               team_domain: 'teamDomain',
-                               channel_id: 'channelId',
-                               channel_name: 'channelName',
-                               user_id: 'userId',
-                               user_name: 'userName',
-                               command: 'command',
-                               text: 'PASSAGEQUERY 1 thessalonians 5:21' ]
-
-        def client = new RESTClient( "http://localhost:$port/" )
-        client.handler.failure = client.handler.success
-        when:
-        def resp = client.post(
-                path: 'esv',
-                body: partialParamMap,
-                requestContentType:URLENC
-        )
-        then:
-        with(resp) {
-            status == 200
-            data.text.contains('test everything; hold fast')
-        }
-    }
-
-    @Test
-    def "ESV passageQuery default to passagequery" () {
-        setup:
-        def partialParamMap = [token: 'TEST',
-                               team_id: 'TEST',
-                               team_domain: 'teamDomain',
-                               channel_id: 'channelId',
-                               channel_name: 'channelName',
-                               user_id: 'userId',
-                               user_name: 'userName',
-                               command: 'command',
-                               text: ' 1 thessalonians 5:21  ' ]
-
-        def client = new RESTClient( "http://localhost:$port/" )
-        client.handler.failure = client.handler.success
-        when:
-        def resp = client.post(
-                path: 'esv',
-                body: partialParamMap,
-                requestContentType:URLENC
-        )
-        then:
-        with(resp) {
-            status == 200
-            data.text.contains('test everything')
-        }
-    }
-
-    @Test
-    def "ESV with no params defaults to HELP" () {
+    def "Logos with no params defaults to HELP" () {
         setup:
         def partialParamMap = [token: 'TEST',
                                team_id: 'TEST',
@@ -194,19 +136,19 @@ public class ESVSpec extends Specification {
         client.handler.failure = client.handler.success
         when:
         def resp = client.post(
-                path: 'esv',
+                path: 'logos',
                 body: partialParamMap,
                 requestContentType:URLENC
         )
         then:
         with(resp) {
             status == 200
-            data.text.contains('ESV Help')
+            data.text.contains('LOGOS Help')
         }
     }
 
     @Test
-    def "ESV with invalid reference " () {
+    def "Logos with no params defaults to HELP " () {
         setup:
         def partialParamMap = [token: 'TEST',
                                team_id: 'TEST',
@@ -216,20 +158,48 @@ public class ESVSpec extends Specification {
                                user_id: 'userId',
                                user_name: 'userName',
                                command: 'command',
-                               text: 'enoch 1 ' ]
+                               text: '' ]
 
         def client = new RESTClient( "http://localhost:$port/" )
         client.handler.failure = client.handler.success
         when:
         def resp = client.post(
-                path: 'esv',
+                path: 'logos',
                 body: partialParamMap,
                 requestContentType:URLENC
         )
         then:
         with(resp) {
             status == 200
-            data.text.contains('No passage found for your query')
+            data.text.contains('LOGOS Help')
+        }
+    }
+
+    @Test
+    def "LOGOS on uncreated user errors " () {
+        setup:
+        def partialParamMap = [token: 'TEST',
+                               team_id: 'TEST',
+                               team_domain: 'teamDomain',
+                               channel_id: 'channelId',
+                               channel_name: 'channelName',
+                               user_id: 'uncreatedUser',
+                               user_name: 'userName',
+                               command: 'command',
+                               text: 'pop' ]
+
+        def client = new RESTClient( "http://localhost:$port/" )
+        client.handler.failure = client.handler.success
+        when:
+        def resp = client.post(
+                path: 'logos',
+                body: partialParamMap,
+                requestContentType:URLENC
+        )
+        then:
+        with(resp) {
+           status == 200
+            data.text.contains('No reading plan found')
         }
     }
 }

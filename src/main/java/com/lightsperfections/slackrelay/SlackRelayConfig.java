@@ -34,14 +34,14 @@ public class SlackRelayConfig {
         return crlf;
     }
 
-    // Not any slack account can connect up. Specify the single token allowed as
-    // a jvm arg. i.e. --slack.token=abc123
-    @Value("#{ systemProperties['slack.token'] ?: 'TEST' }")
-    private String authorizedSlackToken;
+    // Not any slack team can connect up. Specify the single team allowed as
+    // a jvm arg. i.e. --slack.team.id=abc123
+    @Value("#{ systemProperties['slack.team.id'] ?: 'TEST' }")
+    private String authorizedSlackTeamId;
 
-    @Bean(name="authorizedSlackToken")
-    public String getAuthorizedSlackToken() {
-        return authorizedSlackToken;
+    @Bean(name="authorizedSlackTeamId")
+    public String getAuthorizedSlackTeamId() {
+        return authorizedSlackTeamId;
     }
 
     // ESV API will need a developer key to be passed along with requests. Specify
