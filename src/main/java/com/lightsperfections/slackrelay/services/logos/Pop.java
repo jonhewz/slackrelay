@@ -67,21 +67,25 @@ public class Pop implements SlackRelayService {
             return "No reading plan exists with the name " + readingPlanBookmark.getPlanName();
         }
 
-        String reference = getReference(readingPlan, readingPlanBookmark.getIndex());
+        // Adjust for 0 index. If that got set somehow, adjust it to 1.
+        Integer planIndex = readingPlanBookmark.getIndex();
+        if (planIndex == 0) planIndex = 1;
+        String reference = getReference(readingPlan, planIndex);
 
         if (reference == null) {
             return "No reference could be found at your bookmarked location.";
         } else {
 
             // Increment the bookmark
-            readingPlanBookmark.setIndex(readingPlanBookmark.getIndex() + 1);
+            readingPlanBookmark.setIndex(planIndex + 1);
             readingPlanBookmarkDao.updateReadingPlanBookmark(readingPlanBookmark);
 
         }
+        return reference;
 
         // Look up the reference and send it back
-        SlackRelayService service = mainContext.getBean("esv.passagequery", SlackRelayService.class);
-        return service.performAction(userName, reference);
+        //SlackRelayService service = mainContext.getBean("esv.passagequery", SlackRelayService.class);
+        //return service.performAction(userName, reference);
     }
 
     /**
@@ -93,25 +97,27 @@ public class Pop implements SlackRelayService {
      * representing the list of referenceIndexes, but I prefer this approach to start.
      *
      * @param plan
-     * @param planIndex
+     * @param planIndex one-based counter, because the user will set it. A counter of 1 should give the first
+     *                  chapter back. If 0 is passed in, it will be treated as a 1.
      * @return
      */
     private static String getReference(ReadingPlan plan, int planIndex) {
+
         // The "global" plan counter, which increments through the references until it catches up with the
         // desired planIndex (the user's bookmark in the plan)
-        int planCounter = 0;
+        int planCounter = 1; // one-based counter
 
         // Tracks the current track
-        int trackIndex = 0;
+        int trackIndex = 0; // zero-based index
 
         // Keeps the track from incrementing until the track frequency is exhausted
-        int frequencyCounter = 1;
+        int frequencyCounter = 1; // one-based counter
 
         // Create a per-track list of reference indexes, which correspond one-to-one with the tracks. So
         // the index marking the current reference in track[n] is held at referenceIndexes[n]
         List<Track> tracks = plan.getTracks();
         List<Integer> referenceIndexes = new ArrayList<Integer>();
-        for (Track track : tracks) {referenceIndexes.add(0);}
+        for (Track track : tracks) {referenceIndexes.add(0);} // zero-based indexes
 
         // The value to be returned.
         String reference = null;
@@ -124,9 +130,9 @@ public class Pop implements SlackRelayService {
             reference = tracks.get(trackIndex).getReferences().get(referenceIndexes.get(trackIndex));
             planCounter++;
 
-            // Move the referenceIndex up one, or back to the beginning of the List if it's time to loop back.
+            // Increment the referenceIndex, or else move it back to the beginning of the List if it's time.
             referenceIndexes.set(trackIndex,
-                    referenceIndexes.get(trackIndex) >= tracks.get(trackIndex).getReferences().size() ?
+                    referenceIndexes.get(trackIndex) >= tracks.get(trackIndex).getReferences().size() - 1 ?
                             0 : referenceIndexes.get(trackIndex) + 1);
 
             // If the desired frequency of this track is > 1, keep fetching from this track until
