@@ -81,11 +81,11 @@ public class Pop implements SlackRelayService {
             readingPlanBookmarkDao.updateReadingPlanBookmark(readingPlanBookmark);
 
         }
-        return reference;
+        //return reference;
 
         // Look up the reference and send it back
-        //SlackRelayService service = mainContext.getBean("esv.passagequery", SlackRelayService.class);
-        //return service.performAction(userName, reference);
+        SlackRelayService service = mainContext.getBean("esv.passagequery", SlackRelayService.class);
+        return service.performAction(userName, reference);
     }
 
     /**
@@ -101,7 +101,7 @@ public class Pop implements SlackRelayService {
      *                  chapter back. If 0 is passed in, it will be treated as a 1.
      * @return
      */
-    private static String getReference(ReadingPlan plan, int planIndex) {
+    protected static String getReference(ReadingPlan plan, int planIndex) {
 
         // The "global" plan counter, which increments through the references until it catches up with the
         // desired planIndex (the user's bookmark in the plan)

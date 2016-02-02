@@ -11,6 +11,7 @@ import com.lightsperfections.slackrelay.services.InternalImplementationException
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,18 +74,42 @@ public class Status implements SlackRelayService {
         Integer planIndex = readingPlanBookmark.getIndex();
         if (planIndex == 0) planIndex = 1;
 
-        String status = "STATUS\n______\nPlan Name: " + readingPlanBookmark.getPlanName() +
-                "\nStart Date: " + readingPlanBookmark.getStartDate() + "\nIndex: " +
-                readingPlanBookmark.getIndex() + "\n";
+        String status = "Plan Name: " + readingPlanBookmark.getPlanName() +
+                "\nStart Date: " + readingPlanBookmark.getStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE) +
+                "\nIndex: " + readingPlanBookmark.getIndex() + "\n";
+
 
         List<Integer> referenceIndexes = getReferenceIndexes(readingPlan, planIndex);
         List<Track> tracks = readingPlan.getTracks();
         int maxTrackSize = getMaxTrackSize(tracks);
 
+
         for (int i = 0; i < tracks.size(); i++) {
             Track track = tracks.get(i);
-            status += (i < 10 ? "0" + i : i) + ") " +
-                    getTrackProgress(maxTrackSize, track, referenceIndexes.get(i)) + "\n";
+            status += (i < 10 ? "0" + i : i) + ") ";
+            for (int j = 0; j < track.getBooks().length; j++) {
+                status += track.getBooks()[j] + " ";
+            }
+        }
+
+        status += "\n\n";
+
+        for (int i = 0; i < tracks.size(); i++) {
+            Track track = tracks.get(i);
+            status += (i < 10 ? "0" + i : i) + ") ";
+            for (int j = 0; j < track.getBooks().length; j++) {
+                status += track.getBooks()[j] + " ";
+            }
+            status += "\n" + getTrackProgress(maxTrackSize, track, referenceIndexes.get(i)) + "\n";
+        }
+
+        status += "Next: ";
+
+        for (int i = 0; i < tracks.size(); i++) {
+            status += Pop.getReference(readingPlan, readingPlanBookmark.getIndex() + i);
+            if (i < tracks.size() - 1) {
+                status += ", ";
+            }
         }
 
         return status;
@@ -152,8 +177,9 @@ public class Status implements SlackRelayService {
     private static String getTrackProgress(int maxTrackSize, Track track, Integer trackIndex) {
         String progress = "";
         float multiplier = (float) track.getReferences().size() / (float)maxTrackSize;
+        float tildeValue = (float) maxTrackSize / COLUMN_SIZE;
         int totalTildes = Math.round(multiplier * COLUMN_SIZE);
-        int adjustedIndex = Math.round(multiplier * trackIndex);
+        int adjustedIndex = Math.round((float) trackIndex / tildeValue);
 
         for (int i = 0; i < adjustedIndex - 1; i++) {
             progress += "~";
