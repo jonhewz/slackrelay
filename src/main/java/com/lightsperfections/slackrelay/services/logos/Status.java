@@ -83,7 +83,8 @@ public class Status implements SlackRelayService {
 
         for (int i = 0; i < tracks.size(); i++) {
             Track track = tracks.get(i);
-            status += (i < 10 ? i : "0" + i) + getTrackProgress(maxTrackSize, track, referenceIndexes.get(i)) + "\n";
+            status += (i < 10 ? "0" + i : i) + ") " +
+                    getTrackProgress(maxTrackSize, track, referenceIndexes.get(i)) + "\n";
         }
 
         return status;
@@ -150,11 +151,20 @@ public class Status implements SlackRelayService {
 
     private static String getTrackProgress(int maxTrackSize, Track track, Integer trackIndex) {
         String progress = "";
-        int numTildes = Math.round((float) track.getReferences().size() / (float)maxTrackSize * COLUMN_SIZE);
+        float multiplier = (float) track.getReferences().size() / (float)maxTrackSize;
+        int totalTildes = Math.round(multiplier * COLUMN_SIZE);
+        int adjustedIndex = Math.round(multiplier * trackIndex);
 
-        for (int i = 0; i < numTildes; i++) {
+        for (int i = 0; i < adjustedIndex - 1; i++) {
             progress += "~";
         }
+
+        progress += "!";
+
+        for (int i = adjustedIndex + 1; i < totalTildes; i++) {
+            progress += "~";
+        }
+
         return progress;
     }
 
