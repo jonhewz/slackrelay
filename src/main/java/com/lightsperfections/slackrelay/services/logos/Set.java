@@ -62,7 +62,8 @@ public class Set implements SlackRelayService {
             }
 
             try {
-                readingPlanBookmark.setIndex(Integer.valueOf(tokens[0]));
+                Integer index = Integer.valueOf(tokens[0]);
+                readingPlanBookmark.setIndex(index == 0 ? 1 : index);
 
             } catch (NumberFormatException e) {
                     return "Index is not a valid number";

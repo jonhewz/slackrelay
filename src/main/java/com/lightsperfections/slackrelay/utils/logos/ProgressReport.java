@@ -14,15 +14,15 @@ import java.util.List;
  * Private bean to store the referenceIndexes and a list of the next references.
  */
 public class ProgressReport {
-    private List<Integer> referenceIndexes;
+    private List<Integer> referenceIndexes = new ArrayList<Integer>();
     private List<String> references = new ArrayList<String>();
 
     public List<Integer> getReferenceIndexes() {
         return referenceIndexes;
     }
 
-    public void setReferenceIndexes(List<Integer> referenceIndexes) {
-        this.referenceIndexes = referenceIndexes;
+    public void addReferenceIndex(Integer referenceIndex) {
+        referenceIndexes.add(referenceIndex);
     }
 
     public List<String> getReferences() {

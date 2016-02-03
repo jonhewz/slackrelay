@@ -78,25 +78,34 @@ public class ReadingPlanNavigation {
 
 
         // Loop until the planCounter (which increments) catches up with the planIndex (which doesn't).
-        while (planCounter <= planIndex + tracks.size()) {
-            // Snapshot the track markers when you reach the desired spot.
-            if (planCounter == planIndex) {
-                progressReport.setReferenceIndexes(referenceIndexes);
-            }
+        while (planCounter <= planIndex + tracks.size() - 1) {
+
 
             // Counters will always be in a good state. Fetch reference first, then to the business of incrementing
             reference = tracks.get(trackIndex).getReferences().get(referenceIndexes.get(trackIndex));
-            planCounter++;
+
 
             // Save off extra references
             if (planCounter >= planIndex) {
                 progressReport.addReference(reference);
             }
 
+            // Now increment
+            planCounter++;
+
+            // Snapshot the track markers when you reach the desired spot.
+            if (planCounter == planIndex) {
+                for (Integer index : referenceIndexes) {
+                    progressReport.addReferenceIndex(index);
+                }
+
+            }
+
             // Increment the referenceIndex, or else move it back to the beginning of the List if it's time.
             referenceIndexes.set(trackIndex,
                     referenceIndexes.get(trackIndex) >= tracks.get(trackIndex).getReferences().size() - 1 ?
                             0 : referenceIndexes.get(trackIndex) + 1);
+
 
             // If the desired frequency of this track is > 1, keep fetching from this track until
             // the frequency is exhausted. Once frequency is exhausted move on to the next track.

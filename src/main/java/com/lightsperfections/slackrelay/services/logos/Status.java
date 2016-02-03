@@ -25,7 +25,7 @@ import java.util.List;
  * Time: 3:27 PM
  */
 public class Status implements SlackRelayService {
-    private static final int COLUMN_SIZE = 30;
+    private static final int COLUMN_SIZE = 22;
 
     private final String name;
 
@@ -86,25 +86,28 @@ public class Status implements SlackRelayService {
         int maxTrackSize = getMaxTrackSize(tracks);
 
 
+        // Generate an overview of the list of books in each track
         for (int i = 0; i < tracks.size(); i++) {
             Track track = tracks.get(i);
-            status += (i < 10 ? "0" + i : i) + ") ";
+            status += "[" + i + "] ";
             for (int j = 0; j < track.getBooks().length; j++) {
-                status += track.getBooks()[j] + " ";
+                status += track.getBooks()[j] + (j < track.getBooks().length - 1 ? " " : "");
             }
-            status += "\n";
+            status += "]\n";
         }
 
         status += "\n";
 
+        // Generate progress bars for each track showing where the user is in each one.
         for (int i = 0; i < tracks.size(); i++) {
             Track track = tracks.get(i);
-            status += (i < 10 ? "0" + i : i) + ") " +
+            status += "[" + i + "] " +
                     getTrackProgress(maxTrackSize, track, progressReport.getReferenceIndexes().get(i)) + "\n";
         }
 
         status += "Next: ";
 
+        // Show the list of upcoming references.
         List<String> references = progressReport.getReferences();
         for (int i = 0; i < references.size(); i++) {
             status += references.get(i);
@@ -116,6 +119,14 @@ public class Status implements SlackRelayService {
         return status;
     }
 
+    /**
+     * Generate a progress bar for a specific track.
+     *
+     * @param maxTrackSize
+     * @param track
+     * @param trackIndex
+     * @return
+     */
     private static String getTrackProgress(int maxTrackSize, Track track, Integer trackIndex) {
         String progress = "";
         float multiplier = (float) track.getReferences().size() / (float)maxTrackSize;
@@ -124,18 +135,23 @@ public class Status implements SlackRelayService {
         int adjustedIndex = Math.round((float) trackIndex / tildeValue);
 
         for (int i = 0; i < adjustedIndex - 1; i++) {
-            progress += "~";
+            progress += "—";
         }
 
-        progress += "!";
+        progress += "|";
 
         for (int i = adjustedIndex + 1; i < totalTildes; i++) {
-            progress += "~";
+            progress += "—";
         }
 
         return progress;
     }
 
+    /**
+     * Given a list of tracks, what is the size of the longest one?
+     * @param tracks
+     * @return
+     */
     private static int getMaxTrackSize(List<Track> tracks) {
         int max = 0;
         for (Track track : tracks) {
