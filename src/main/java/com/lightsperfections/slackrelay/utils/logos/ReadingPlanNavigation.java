@@ -94,7 +94,7 @@ public class ReadingPlanNavigation {
             planCounter++;
 
             // Snapshot the track markers when you reach the desired spot.
-            if (planCounter == planIndex) {
+            if (planCounter >= planIndex) {
                 for (Integer index : referenceIndexes) {
                     progressReport.addReferenceIndex(index);
                 }
