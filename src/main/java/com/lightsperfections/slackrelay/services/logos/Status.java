@@ -77,8 +77,7 @@ public class Status implements SlackRelayService {
         if (planIndex == 0) planIndex = 1;
 
         String status = "Plan Name: " + readingPlanBookmark.getPlanName() +
-                "\nStart Date: " + readingPlanBookmark.getStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE) +
-                "\nIndex: " + readingPlanBookmark.getIndex() + "\n";
+                "\nStart Date: " + readingPlanBookmark.getStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "\n\n";
 
 
         ProgressReport progressReport = ReadingPlanNavigation.getProgressReport(readingPlan, planIndex);
@@ -87,27 +86,31 @@ public class Status implements SlackRelayService {
 
 
         // Generate an overview of the list of books in each track
+        status += "Plan Details\n";
         for (int i = 0; i < tracks.size(); i++) {
             Track track = tracks.get(i);
             status += "[" + i + "] ";
             for (int j = 0; j < track.getBooks().length; j++) {
                 status += track.getBooks()[j] + (j < track.getBooks().length - 1 ? " " : "");
             }
-            status += "]\n";
+            if (track.getFrequency() > 1) {
+                status += " x " + track.getFrequency();
+            }
+            status += "\n";
         }
 
         status += "\n";
 
         // Generate progress bars for each track showing where the user is in each one.
+        status += "Progress\n";
         for (int i = 0; i < tracks.size(); i++) {
             Track track = tracks.get(i);
             status += "[" + i + "] " +
                     getTrackProgress(maxTrackSize, track, progressReport.getReferenceIndexes().get(i)) + "\n";
         }
 
-        status += "Next: ";
-
         // Show the list of upcoming references.
+        status += "Index: " + readingPlanBookmark.getIndex() + "\nNext: ";
         List<String> references = progressReport.getReferences();
         for (int i = 0; i < references.size(); i++) {
             status += references.get(i);
@@ -129,9 +132,11 @@ public class Status implements SlackRelayService {
      */
     private static String getTrackProgress(int maxTrackSize, Track track, Integer trackIndex) {
         String progress = "";
+
         float multiplier = (float) track.getReferences().size() / (float)maxTrackSize;
-        float tildeValue = (float) maxTrackSize / COLUMN_SIZE;
         int totalTildes = Math.round(multiplier * COLUMN_SIZE);
+
+        float tildeValue = (float) maxTrackSize / COLUMN_SIZE;
         int adjustedIndex = Math.round((float) trackIndex / tildeValue);
 
         for (int i = 0; i < adjustedIndex - 1; i++) {

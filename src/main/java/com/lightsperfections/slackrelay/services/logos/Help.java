@@ -31,11 +31,9 @@ public class Help implements SlackRelayService {
         return
                 "LOGOS Help\n" +
                 "----------\n" +
+                "/logos set [plan_name|index] - set the plan or the index\n" +
                 "/logos pop - get the next passage\n" +
-                "/logos push - mark the most recent passage as unread\n" +
-                "/logos ff [n] - fast-forward n passages (but still track them)\n" +
-                "/logos status - progress info\n" +
-                "/logos plan - plan info\n";
+                "/logos status - info about the plan and your progress\n";
 
     }
 

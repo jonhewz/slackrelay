@@ -18,7 +18,7 @@ verses.
 This command will supply a Slack user with a daily set of reading. It is modeled after the scenario where
 someone wants to read their Bible every day, adhering to a Daily Bible Reading Plan. Slack, with its app support and
 access-anywhere website, as well as its mature bot capabilities, makes Slack a prime candidate for a front-end
-controller.
+interface.
 
 The goal is to make it easy to build out custom plans to your liking. The type of plan I want to capture is something like Professor Horner's system
 (https://www.facebook.com/Prof-Horners-Bible-Reading-System-148160145252358/). It has you read 10 chapters a day, one
@@ -32,9 +32,6 @@ of his groups where he would read more than a chapter from that group before mov
 of configurability that is worth adding.
 
 User chats with a Daily Reading bot in slack. It is not a public conversation. They can give the bot several commands:
-* `/logos pop` - get the next passage
-* `/logos push` - mark the most recent passage as unread
-* `/logos ff [n]` - fast-forward n passages (but still track them) 
 * `/logos set [plan_name|bookmark_indexes]` - choose a reading plan, or set the bookmark indexes for your current plan
+* `/logos pop` - get the next passage
 * `/logos status` - progress info
-* `/logos plan` - plan info

@@ -82,11 +82,12 @@ public class Pop implements SlackRelayService {
             readingPlanBookmarkDao.updateReadingPlanBookmark(readingPlanBookmark);
 
         }
-        return reference;
+
 
         // Look up the reference and send it back
-        //SlackRelayService service = mainContext.getBean("esv.passagequery", SlackRelayService.class);
-        //return service.performAction(userName, reference);
+        SlackRelayService service = mainContext.getBean("esv.passagequery", SlackRelayService.class);
+        return service.performAction(userName, reference);
+        //return reference;
     }
 
 

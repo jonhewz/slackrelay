@@ -12,11 +12,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ReadingPlanConfig {
 
-    @Bean(name = "simple_reading_plan")
+    @Bean(name = "simple")
     public ReadingPlan getSimpleReadingPlan() {
         ReadingPlan readingPlan = new ReadingPlan("Simple");
 
-        readingPlan.addTrack(new Book[]{Book.EZR});
+        readingPlan.addTrack(new Book[]{Book.OB});  // 1
+        readingPlan.addTrack(new Book[]{Book.HAG}); // 2
+        readingPlan.addTrack(new Book[]{Book.HAB}); // 3
         //readingPlan.addTrack(2, new Book[]{Book.MT, Book.MR, Book.LU, Book.JOH});
         //readingPlan.addTrack(3, new Book[]{Book.RO, Book.GA, Book.EPH, Book.HEB});
 

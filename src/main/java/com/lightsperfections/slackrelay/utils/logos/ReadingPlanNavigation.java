@@ -73,11 +73,13 @@ public class ReadingPlanNavigation {
         List<Integer> referenceIndexes = new ArrayList<Integer>();
         for (Track track : tracks) {referenceIndexes.add(0);} // zero-based indexes
 
-        // The value to be returned.
+
         String reference = null;
 
 
-        // Loop until the planCounter (which increments) catches up with the planIndex (which doesn't).
+        // Loop until the planCounter (which increments) catches up with the planIndex (which doesn't). The
+        // point of adding the tracksize to the loop terminator is to continue grabbing more even after
+        // the reference is found. It can be used for a peek-ahead at next references.
         while (planCounter <= planIndex + tracks.size() - 1) {
 
 
@@ -85,21 +87,21 @@ public class ReadingPlanNavigation {
             reference = tracks.get(trackIndex).getReferences().get(referenceIndexes.get(trackIndex));
 
 
-            // Save off extra references
+            // This'll keep looping for a bit even after finding the right reference. The first reference added to
+            // the progressReport is the reference at planIndex. The next ones are look-aheads. The reference indexes
+            // being saved off represent all current reference indexes for each track.
             if (planCounter >= planIndex) {
                 progressReport.addReference(reference);
+                if (planCounter == planIndex) {
+                    for (Integer index : referenceIndexes) {
+                        progressReport.addReferenceIndex(index);
+                    }
+                }
             }
 
             // Now increment
             planCounter++;
 
-            // Snapshot the track markers when you reach the desired spot.
-            if (planCounter >= planIndex) {
-                for (Integer index : referenceIndexes) {
-                    progressReport.addReferenceIndex(index);
-                }
-
-            }
 
             // Increment the referenceIndex, or else move it back to the beginning of the List if it's time.
             referenceIndexes.set(trackIndex,
