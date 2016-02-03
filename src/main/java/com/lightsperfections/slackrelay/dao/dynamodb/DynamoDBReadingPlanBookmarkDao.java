@@ -1,6 +1,8 @@
 package com.lightsperfections.slackrelay.dao.dynamodb;
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.lightsperfections.slackrelay.beans.logos.ReadingPlanBookmark;
@@ -23,6 +25,10 @@ public class DynamoDBReadingPlanBookmarkDao implements ReadingPlanBookmarkDao {
     private Logger logger = LoggerFactory.getLogger("DynamoDBReadingPlanBookmarkDao");
 
     static AmazonDynamoDBClient client = new AmazonDynamoDBClient(new ProfileCredentialsProvider());
+    static{
+        client.setRegion(Region.getRegion(Regions.US_WEST_2));
+    }
+
 
     @Override
     public ReadingPlanBookmark findByUserName(String userName) {

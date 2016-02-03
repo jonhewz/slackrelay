@@ -1,6 +1,8 @@
 package com.lightsperfections.slackrelay;
 
+import com.lightsperfections.slackrelay.dao.HistoryDao;
 import com.lightsperfections.slackrelay.dao.ReadingPlanBookmarkDao;
+import com.lightsperfections.slackrelay.dao.dynamodb.DynamoDBHistoryDao;
 import com.lightsperfections.slackrelay.dao.dynamodb.DynamoDBReadingPlanBookmarkDao;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import com.lightsperfections.slackrelay.services.Unimplemented;
@@ -122,10 +124,14 @@ public class SlackRelayConfig {
     }
 
     // DAOs
-
     @Bean
     public ReadingPlanBookmarkDao getReadingPlanBookmarkDao() {
         return new DynamoDBReadingPlanBookmarkDao();
+    }
+
+    @Bean
+    public HistoryDao getHistoryDao() {
+        return new DynamoDBHistoryDao();
     }
 
 }
