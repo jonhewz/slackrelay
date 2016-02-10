@@ -35,3 +35,4 @@ User chats with a Daily Reading bot in slack. It is not a public conversation. T
 * `/logos set [plan_name|bookmark_indexes]` - choose a reading plan, or set the bookmark indexes for your current plan
 * `/logos pop` - get the next passage
 * `/logos status` - progress info
+* `/logos plans` - listing of plans

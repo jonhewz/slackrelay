@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * Define all reading plans. Currently not maintained in DB or anything - just defined in this config file.
+ *
  * Created by jon on 1/17/16.
  */
 @Configuration
@@ -14,61 +16,70 @@ public class ReadingPlanConfig {
 
     @Bean(name = "simple")
     public ReadingPlan getSimpleReadingPlan() {
-        ReadingPlan readingPlan = new ReadingPlan("Simple");
+        ReadingPlan readingPlan = new ReadingPlan("simple", "Test plan for debugging");
 
-        readingPlan.addTrack(new Book[]{Book.OB});  // 1
-        readingPlan.addTrack(new Book[]{Book.HAG}); // 2
-        readingPlan.addTrack(new Book[]{Book.HAB}); // 3
-        //readingPlan.addTrack(2, new Book[]{Book.MT, Book.MR, Book.LU, Book.JOH});
-        //readingPlan.addTrack(3, new Book[]{Book.RO, Book.GA, Book.EPH, Book.HEB});
+        readingPlan.addTrack("One chapter book", new Book[]{Book.OB});
+        readingPlan.addTrack("Two chapter book", new Book[]{Book.HAG});
+        readingPlan.addTrack("Three chapter book", new Book[]{Book.HAB});
 
         return readingPlan;
     }
 
     @Bean(name = "horner")
     public ReadingPlan getHorner() {
-        ReadingPlan readingPlan = new ReadingPlan("horner");
-        readingPlan.addTrack(new Book[]{Book.MT, Book.MR, Book.LU, Book.JOH});
-        readingPlan.addTrack(new Book[]{Book.GE, Book.EX, Book.LE, Book.NU, Book.DE});
-        readingPlan.addTrack(new Book[]{Book.RO, Book.CO1, Book.CO2, Book.GA, Book.EPH, Book.PHP, Book.COL, Book.HEB});
-        readingPlan.addTrack(new Book[]{Book.TH1, Book.TH2, Book.TI1, Book.TI2, Book.TIT, Book.PHM, Book.JAS, Book.PE1, Book.PE2, Book.JO1, Book.JO2, Book.JO3, Book.JUDE, Book.RE});
-        readingPlan.addTrack(new Book[]{Book.JOB, Book.EC, Book.SO});
-        readingPlan.addTrack(new Book[]{Book.PS});
-        readingPlan.addTrack(new Book[]{Book.PR});
-        readingPlan.addTrack(new Book[]{Book.JOS, Book.JUD, Book.RU, Book.SA1, Book.SA2, Book.KI1, Book.KI2, Book.CH1, Book.CH2, Book.EZR, Book.NE, Book.ES});
-        readingPlan.addTrack(new Book[]{Book.ISA, Book.JER, Book.LA, Book.EZE, Book.DA, Book.HO, Book.JOE, Book.AM, Book.OB, Book.JON, Book.MIC, Book.NA, Book.HAB, Book.ZEC, Book.HAG, Book.ZEC, Book.MAL});
-        readingPlan.addTrack(new Book[]{Book.AC});
+        ReadingPlan readingPlan = new ReadingPlan("horner", "The original plan by Professor Grant Horner");
+        readingPlan.addTrack("Gospels", new Book[]{
+                Book.MT, Book.MR, Book.LU, Book.JOH});
+        readingPlan.addTrack("Pentateuch", new Book[]{
+                Book.GE, Book.EX, Book.LE, Book.NU, Book.DE});
+        readingPlan.addTrack("Major Epistles", new Book[]{
+                Book.RO, Book.CO1, Book.CO2, Book.GA, Book.EPH, Book.PHP, Book.COL, Book.HEB});
+        readingPlan.addTrack("Minor Epistles, Revelation", new Book[]{
+                Book.TH1, Book.TH2, Book.TI1, Book.TI2, Book.TIT, Book.PHM, Book.JAS,
+                Book.PE1, Book.PE2, Book.JO1, Book.JO2, Book.JO3, Book.JUDE, Book.RE});
+        readingPlan.addTrack("Wisdom sans Proverbs", new Book[]{
+                Book.JOB, Book.EC, Book.SO});
+        readingPlan.addTrack("Psalms", new Book[]{
+                Book.PS});
+        readingPlan.addTrack("Proverbs", new Book[]{
+                Book.PR});
+        readingPlan.addTrack("History", new Book[]{
+                Book.JOS, Book.JUD, Book.RU, Book.SA1, Book.SA2, Book.KI1, Book.KI2, Book.CH1,
+                Book.CH2, Book.EZR, Book.NE, Book.ES});
+        readingPlan.addTrack("Prophets", new Book[]{
+                Book.ISA, Book.JER, Book.LA, Book.EZE, Book.DA, Book.HO, Book.JOE, Book.AM,
+                Book.OB, Book.JON, Book.MIC, Book.NA, Book.HAB, Book.ZEC, Book.HAG, Book.ZEC, Book.MAL});
+        readingPlan.addTrack("Acts", new Book[]{
+                Book.AC});
 
         return readingPlan;
     }
 
     @Bean(name="jdh")
     public ReadingPlan getJDH() {
-        ReadingPlan readingPlan = new ReadingPlan("jdh");
+        ReadingPlan readingPlan = new ReadingPlan("jdh", "Jon's plan for daily reading");
 
-        /* psalms */
-        readingPlan.addTrack(new Book[]{Book.PS});
-
-        /* prophecy */
-        readingPlan.addTrack(new Book[]{Book.ISA, Book.JER, Book.LA, Book.EZE, Book.HO, Book.JOE, Book.AM, Book.OB, Book.JON, Book.MIC, Book.NA, Book.HAB, Book.ZEC, Book.HAG, Book.ZEC, Book.MAL});
-
-        /* gospels + acts */
-        readingPlan.addTrack(new Book[]{Book.JOH, Book.MR, Book.MT, Book.LU, Book.AC});
-
-        /* major paul, chronological */
-        readingPlan.addTrack(new Book[]{Book.TH1, Book.TH2, Book.CO1, Book.CO2, Book.GA, Book.RO, Book.COL, Book.EPH, Book.PHP});
-
-        /* nt miscellany, chronological */
-        readingPlan.addTrack(new Book[]{Book.PHM, Book.JAS, Book.PE1, Book.HEB, Book.TI1, Book.TIT, Book.PE2, Book.TI2, Book.JUDE, Book.JO1, Book.JO2, Book.JO3});
-
-        /* wisdom */
-        readingPlan.addTrack(new Book[]{Book.JOB, Book.SO, Book.PR, Book.EC,});
-
-        /* 2X ot history */
-        readingPlan.addTrack(2, new Book[]{Book.GE, Book.EX, Book.LE, Book.NU, Book.DE, Book.JOS, Book.JUD, Book.RU, Book.SA1, Book.SA2, Book.KI1, Book.KI2, Book.EZR, Book.CH1, Book.CH2, Book.NE, Book.ES});
-
-        /* apocalyptic */
-        readingPlan.addTrack(new Book[]{Book.DA, Book.RE});
+        readingPlan.addTrack("Psalms...", new Book[]{
+                Book.PS});
+        readingPlan.addTrack("... and the prophets point to...", new Book[]{
+                Book.ISA, Book.JER, Book.LA, Book.EZE, Book.HO, Book.JOE, Book.AM,
+                Book.OB, Book.JON, Book.MIC, Book.NA, Book.HAB, Book.ZEC, Book.HAG,
+                Book.ZEC, Book.MAL});
+        readingPlan.addTrack("... the Gospel", new Book[]{
+                Book.JOH, Book.MR, Book.MT, Book.LU, Book.AC});
+        readingPlan.addTrack("Major Paul, in order of writing", new Book[]{
+                Book.TH1, Book.TH2, Book.CO1, Book.CO2, Book.GA, Book.RO, Book.COL,
+                Book.EPH, Book.PHP});
+        readingPlan.addTrack("Minor Paul and the rest of the epistles, in order of writing", new Book[]{
+                Book.PHM, Book.JAS, Book.PE1, Book.HEB, Book.TI1, Book.TIT, Book.PE2,
+                Book.TI2, Book.JUDE, Book.JO1, Book.JO2, Book.JO3});
+        readingPlan.addTrack("Wisdom", new Book[]{
+                Book.JOB, Book.SO, Book.PR, Book.EC});
+        readingPlan.addTrack("OT history, doubled up", 2, new Book[]{
+                Book.GE, Book.EX, Book.LE, Book.NU, Book.DE, Book.JOS, Book.JUD, Book.RU,
+                Book.SA1, Book.SA2, Book.KI1, Book.KI2, Book.EZR, Book.CH1, Book.CH2, Book.NE, Book.ES});
+        readingPlan.addTrack("Apocalyptic", new Book[]{
+                Book.DA, Book.RE});
 
         return readingPlan;
     }

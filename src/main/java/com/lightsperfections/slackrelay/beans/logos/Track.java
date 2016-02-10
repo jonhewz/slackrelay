@@ -9,6 +9,7 @@ import java.util.List;
  * Created by jon on 1/23/16.
  */
 public class Track {
+    private String description;
     private Book[] books;
     private int frequency;
     private List<String> references = new ArrayList<String>();
@@ -19,7 +20,8 @@ public class Track {
      *
      * @param books
      */
-    public Track(int frequency, Book[] books) {
+    public Track(String description, int frequency, Book[] books) {
+        this.description = description;
         this.frequency = frequency;
         this.books = books;
 
@@ -28,6 +30,10 @@ public class Track {
                 references.add(books[bookIndex].displayName + " " + chapterIndex);
             }
         }
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public int getFrequency() {
@@ -40,5 +46,29 @@ public class Track {
 
     public Book[] getBooks() {
         return books;
+    }
+
+    /**
+     * Example:
+     *
+     * Wisdom Books | JOB SO PR EC x 2
+     *
+     * @return
+     */
+    public String toString() {
+        String rv = getDescription() + " | ";
+
+        for (int i = 0; i < books.length; i++) {
+            rv += books[i];
+            if (i < books.length - 1) {
+                rv += " ";
+            }
+        }
+
+        if (frequency > 1) {
+            rv += " x " + frequency;
+        }
+
+        return rv;
     }
 }

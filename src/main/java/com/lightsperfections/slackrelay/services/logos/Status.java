@@ -76,32 +76,13 @@ public class Status implements SlackRelayService {
         Integer planIndex = readingPlanBookmark.getIndex();
         if (planIndex == 0) planIndex = 1;
 
-        String status = "Plan Name: " + readingPlanBookmark.getPlanName() +
-                "\nStart Date: " + readingPlanBookmark.getStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "\n\n";
+        String status = readingPlan.toString() + "\n";
 
 
+        // Generate progress bars for each track showing where the user is in each one.
         ProgressReport progressReport = ReadingPlanNavigation.getProgressReport(readingPlan, planIndex);
         List<Track> tracks = readingPlan.getTracks();
         int maxTrackSize = getMaxTrackSize(tracks);
-
-
-        // Generate an overview of the list of books in each track
-        status += "Plan Details\n";
-        for (int i = 0; i < tracks.size(); i++) {
-            Track track = tracks.get(i);
-            status += "[" + i + "] ";
-            for (int j = 0; j < track.getBooks().length; j++) {
-                status += track.getBooks()[j] + (j < track.getBooks().length - 1 ? " " : "");
-            }
-            if (track.getFrequency() > 1) {
-                status += " x " + track.getFrequency();
-            }
-            status += "\n";
-        }
-
-        status += "\n";
-
-        // Generate progress bars for each track showing where the user is in each one.
         status += "Progress\n";
         for (int i = 0; i < tracks.size(); i++) {
             Track track = tracks.get(i);
@@ -110,7 +91,8 @@ public class Status implements SlackRelayService {
         }
 
         // Show the list of upcoming references.
-        status += "Index: " + readingPlanBookmark.getIndex() + "\nNext: ";
+        status += "Index: " + readingPlanBookmark.getIndex() + ", Start Date: " +
+                readingPlanBookmark.getStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "\nNext: ";
         List<String> references = progressReport.getReferences();
         for (int i = 0; i < references.size(); i++) {
             status += references.get(i);

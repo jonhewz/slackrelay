@@ -33,7 +33,8 @@ public class Help implements SlackRelayService {
                 "----------\n" +
                 "/logos set [plan_name|index] - set the plan or the index\n" +
                 "/logos pop - get the next passage\n" +
-                "/logos status - info about the plan and your progress\n";
+                "/logos status - info about your current plan and progress\n" +
+                "/logos plans - list the available plans\n";
 
     }
 
