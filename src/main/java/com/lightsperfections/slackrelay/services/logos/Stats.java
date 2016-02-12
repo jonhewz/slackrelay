@@ -1,19 +1,14 @@
 package com.lightsperfections.slackrelay.services.logos;
 
-import com.lightsperfections.slackrelay.ReadingPlanConfig;
 import com.lightsperfections.slackrelay.SlackRelayConfig;
-import com.lightsperfections.slackrelay.beans.logos.ReadingPlan;
-import com.lightsperfections.slackrelay.beans.logos.ReadingPlanBookmark;
-import com.lightsperfections.slackrelay.beans.logos.Track;
-import com.lightsperfections.slackrelay.dao.ReadingPlanBookmarkDao;
+import com.lightsperfections.slackrelay.beans.logos.HistoryEntry;
+import com.lightsperfections.slackrelay.dao.HistoryEntryDao;
 import com.lightsperfections.slackrelay.services.DependentServiceException;
 import com.lightsperfections.slackrelay.services.InternalImplementationException;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
-import com.lightsperfections.slackrelay.utils.logos.ProgressReport;
-import com.lightsperfections.slackrelay.utils.logos.ReadingPlanNavigation;
+import com.lightsperfections.slackrelay.utils.logos.Reporting;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -61,6 +56,9 @@ public class Stats implements SlackRelayService {
      * Q1  Q2  Q3  Q4
      *
      *
+     * NOTES
+     * HashMap<Date, List<Reference>> - loop through and track largest value size
+     *
      *
      * @param userName
      * @param userText
@@ -78,7 +76,15 @@ public class Stats implements SlackRelayService {
         AnnotationConfigApplicationContext mainContext =
                 new AnnotationConfigApplicationContext(SlackRelayConfig.class);
 
-        return stats;
+        HistoryEntryDao historyEntryDao = mainContext.getBean(HistoryEntryDao.class);
+
+        List<HistoryEntry> historyEntries = historyEntryDao.findHistoryEntriesByUserName(userName);
+
+        return
+                "Longest Streak: " + Reporting.calculateLongestStreak(historyEntries) + "\n";/* +
+                "Best Day: " + calculateBestDay(historyEntries) + "\n" +
+                "Average volume (reading days): " + calculateAverageForReadingDays(historyEntries) + "\n" +
+                "Average volume (all days): " + calculateAverageForAllDays(historyEntries);*/
     }
 
 }

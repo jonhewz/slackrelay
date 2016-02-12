@@ -1,16 +1,12 @@
 package com.lightsperfections.slackrelay.services.logos;
 
 import com.lightsperfections.slackrelay.ReadingPlanConfig;
-import com.lightsperfections.slackrelay.SlackRelayConfig;
 import com.lightsperfections.slackrelay.beans.logos.ReadingPlan;
-import com.lightsperfections.slackrelay.beans.logos.ReadingPlanBookmark;
-import com.lightsperfections.slackrelay.dao.ReadingPlanBookmarkDao;
 import com.lightsperfections.slackrelay.services.DependentServiceException;
 import com.lightsperfections.slackrelay.services.InternalImplementationException;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 /**

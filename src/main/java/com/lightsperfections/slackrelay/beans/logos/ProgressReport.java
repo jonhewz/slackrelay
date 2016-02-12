@@ -1,4 +1,4 @@
-package com.lightsperfections.slackrelay.utils.logos;
+package com.lightsperfections.slackrelay.beans.logos;
 
 /**
  * Created with IntelliJ IDEA.

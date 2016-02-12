@@ -43,7 +43,7 @@ public class ReadingPlanConfig {
                 Book.PS});
         readingPlan.addTrack("Proverbs", new Book[]{
                 Book.PR});
-        readingPlan.addTrack("History", new Book[]{
+        readingPlan.addTrack("HistoryEntry", new Book[]{
                 Book.JOS, Book.JUD, Book.RU, Book.SA1, Book.SA2, Book.KI1, Book.KI2, Book.CH1,
                 Book.CH2, Book.EZR, Book.NE, Book.ES});
         readingPlan.addTrack("Prophets", new Book[]{

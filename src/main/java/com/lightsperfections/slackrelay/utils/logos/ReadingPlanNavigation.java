@@ -1,5 +1,6 @@
 package com.lightsperfections.slackrelay.utils.logos;
 
+import com.lightsperfections.slackrelay.beans.logos.ProgressReport;
 import com.lightsperfections.slackrelay.beans.logos.ReadingPlan;
 import com.lightsperfections.slackrelay.beans.logos.Track;
 

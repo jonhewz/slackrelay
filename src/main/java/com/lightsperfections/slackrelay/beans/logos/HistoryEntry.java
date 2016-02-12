@@ -8,10 +8,8 @@ import java.time.LocalDateTime;
  * Date: 12/30/15
  * Time: 9:20 AM
  */
-public interface History {
-
+public interface HistoryEntry {
     public String getUserName();
-    public LocalDateTime getDateTime();
+    public LocalDateTime getEntryTime();
     public String getReference();
-
 }

@@ -1,7 +1,6 @@
 package com.lightsperfections.slackrelay.beans.logos;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
