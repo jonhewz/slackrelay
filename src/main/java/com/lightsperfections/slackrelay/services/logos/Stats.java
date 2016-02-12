@@ -7,6 +7,7 @@ import com.lightsperfections.slackrelay.services.DependentServiceException;
 import com.lightsperfections.slackrelay.services.InternalImplementationException;
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import com.lightsperfections.slackrelay.utils.logos.Reporting;
+import com.lightsperfections.slackrelay.utils.logos.ReportingException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;
@@ -78,13 +79,19 @@ public class Stats implements SlackRelayService {
 
         HistoryEntryDao historyEntryDao = mainContext.getBean(HistoryEntryDao.class);
 
-        List<HistoryEntry> historyEntries = historyEntryDao.findHistoryEntriesByUserName(userName);
+        List<? extends HistoryEntry> historyEntries = historyEntryDao.findHistoryEntriesByUserName(userName);
 
-        return
-                "Longest Streak: " + Reporting.calculateLongestStreak(historyEntries) + "\n";/* +
+        try {
+            stats =
+                    "Longest Streak: " + Reporting.calculateLongestStreak(historyEntries) + "\n";/* +
                 "Best Day: " + calculateBestDay(historyEntries) + "\n" +
                 "Average volume (reading days): " + calculateAverageForReadingDays(historyEntries) + "\n" +
                 "Average volume (all days): " + calculateAverageForAllDays(historyEntries);*/
+        } catch (ReportingException e) {
+            return e.getMessage();
+        }
+
+        return stats;
     }
 
 }

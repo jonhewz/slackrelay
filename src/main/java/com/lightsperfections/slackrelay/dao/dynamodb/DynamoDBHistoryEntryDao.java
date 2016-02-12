@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,19 +46,23 @@ public class DynamoDBHistoryEntryDao implements HistoryEntryDao {
      * @return list of HistoryEntry objects, no guarantee of sorting
      */
     @Override
-    public List<HistoryEntry> findHistoryEntriesByUserName(String userName) {
+    public List<? extends HistoryEntry> findHistoryEntriesByUserName(String userName) {
 
         DynamoDBMapper mapper = new DynamoDBMapper(client);
 
-        Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+        Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":v1", new AttributeValue().withS(userName));
 
-        DynamoDBQueryExpression<HistoryEntry> queryExpression = new DynamoDBQueryExpression<HistoryEntry>()
-                .withKeyConditionExpression("Id = :v1")
+        DynamoDBQueryExpression<DynamoDBHistoryEntry> queryExpression = new DynamoDBQueryExpression<DynamoDBHistoryEntry>()
+                //.withKeyConditionExpression("UserName = :v1")
+                .withIndexName("UserName-index")
+                .withKeyConditionExpression("UserName = :v1")
                 .withExpressionAttributeValues(eav);
 
-        return mapper.query(HistoryEntry.class, queryExpression);
+        List<DynamoDBHistoryEntry> historyEntries =
+                mapper.query(DynamoDBHistoryEntry.class, queryExpression);
 
+        return historyEntries;
     }
 
 }

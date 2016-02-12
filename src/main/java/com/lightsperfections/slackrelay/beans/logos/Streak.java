@@ -32,7 +32,8 @@ public class Streak {
      */
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yy");
-        return (ChronoUnit.DAYS.between(begin, end) + 1) + " days (" +
+        long days = ChronoUnit.DAYS.between(begin, end) + 1;
+        return days + " day" + (days < 2 ? "" : "s") +  " (" +
                 begin.format(formatter) + " - " + end.format(formatter) + ")";
     }
 }

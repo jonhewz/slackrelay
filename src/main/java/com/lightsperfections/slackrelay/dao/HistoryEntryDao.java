@@ -12,6 +12,6 @@ import java.util.List;
  * Time: 11:56 AM
  */
 public interface HistoryEntryDao {
-    public void createHistoryEntryForUserName(String userName, LocalDateTime dateTime, String reference);
-    public List<HistoryEntry> findHistoryEntriesByUserName(String userName);
+    void createHistoryEntryForUserName(String userName, LocalDateTime dateTime, String reference);
+    List<? extends HistoryEntry> findHistoryEntriesByUserName(String userName);
 }

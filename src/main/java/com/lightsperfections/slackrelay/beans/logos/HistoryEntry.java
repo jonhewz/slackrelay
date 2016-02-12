@@ -9,7 +9,12 @@ import java.time.LocalDateTime;
  * Time: 9:20 AM
  */
 public interface HistoryEntry {
-    public String getUserName();
-    public LocalDateTime getEntryTime();
-    public String getReference();
+    String getUserName();
+    void setUserName(String userName);
+
+    LocalDateTime getEntryTime();
+    void setEntryTime(LocalDateTime entryTime);
+
+    String getReference();
+    void setReference(String reference);
 }

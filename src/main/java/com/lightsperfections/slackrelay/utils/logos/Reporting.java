@@ -12,7 +12,12 @@ import java.util.List;
  * Created by jon on 2/11/16.
  */
 public class Reporting {
-    public static Streak calculateLongestStreak(List<HistoryEntry> historyEntries) {
+
+    public static Streak calculateLongestStreak(List<? extends HistoryEntry> historyEntries) throws ReportingException {
+
+        if (historyEntries == null || historyEntries.size() < 1) {
+            throw new ReportingException("No history to report on.");
+        }
 
         // List has to be sorted to determine streaks.
         historyEntries.sort((o1, o2)->o1.getEntryTime().compareTo(o2.getEntryTime()));

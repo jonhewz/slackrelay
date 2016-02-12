@@ -10,16 +10,16 @@ import java.time.LocalDateTime;
  */
 public interface ReadingPlanBookmark {
 
-    public String getUserName();
-    public void setUserName(String userName);
+    String getUserName();
+    void setUserName(String userName);
 
-    public String getPlanName();
-    public void setPlanName(String planName);
+    String getPlanName();
+    void setPlanName(String planName);
 
-    public LocalDateTime getStartDate();
-    public void setStartDate(LocalDateTime startDate);
+    LocalDateTime getStartDate();
+    void setStartDate(LocalDateTime startDate);
 
-    public Integer getIndex();
-    public void setIndex(Integer index);
+    Integer getIndex();
+    void setIndex(Integer index);
 
 }

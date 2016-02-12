@@ -7,10 +7,7 @@ import com.lightsperfections.slackrelay.dao.dynamodb.DynamoDBReadingPlanBookmark
 import com.lightsperfections.slackrelay.services.SlackRelayService;
 import com.lightsperfections.slackrelay.services.Unimplemented;
 import com.lightsperfections.slackrelay.services.esv.PassageQuery;
-import com.lightsperfections.slackrelay.services.logos.Plans;
-import com.lightsperfections.slackrelay.services.logos.Pop;
-import com.lightsperfections.slackrelay.services.logos.Set;
-import com.lightsperfections.slackrelay.services.logos.Status;
+import com.lightsperfections.slackrelay.services.logos.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -127,6 +124,11 @@ public class SlackRelayConfig {
     @Bean(name="logos.plans")
     public SlackRelayService getLogosPlansService() {
         return new Plans("LOGOS Plans");
+    }
+
+    @Bean(name="logos.stats")
+    public SlackRelayService getLogosStatsService() {
+        return new Stats("LOGOS Stats");
     }
 
     // DAOs

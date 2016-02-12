@@ -31,10 +31,11 @@ public class Help implements SlackRelayService {
         return
                 "LOGOS Help\n" +
                 "----------\n" +
+                "/logos plans - list the available plans\n" +
                 "/logos set [plan_name|index] - set the plan or the index\n" +
                 "/logos pop - get the next passage\n" +
                 "/logos status - info about your current plan and progress\n" +
-                "/logos plans - list the available plans\n";
+                "/logos stats - data analysis\n";
 
     }
 
