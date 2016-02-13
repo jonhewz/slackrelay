@@ -9,6 +9,10 @@ import java.time.LocalDateTime;
  * Followed the example here:
  * https://github.com/awslabs/aws-dynamodb-examples/blob/master/src/main/java/com/amazonaws/codesamples/datamodeling/ObjectPersistenceCRUDExample.java
  *
+ * This object corresponds this DynamoDB table
+ *   Table name:            ReadingPlanBookmark
+ *   Primary partition key: UserName (String)
+ *
  * Created with IntelliJ IDEA.
  * User: jhughes
  * Date: 12/30/15

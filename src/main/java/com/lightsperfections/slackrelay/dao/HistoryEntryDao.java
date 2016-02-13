@@ -3,6 +3,7 @@ package com.lightsperfections.slackrelay.dao;
 import com.lightsperfections.slackrelay.beans.logos.HistoryEntry;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -13,5 +14,5 @@ import java.util.List;
  */
 public interface HistoryEntryDao {
     void createHistoryEntryForUserName(String userName, LocalDateTime dateTime, String reference);
-    List<? extends HistoryEntry> findHistoryEntriesByUserName(String userName);
+    Collection<HistoryEntry> findHistoryEntriesByUserName(String userName);
 }

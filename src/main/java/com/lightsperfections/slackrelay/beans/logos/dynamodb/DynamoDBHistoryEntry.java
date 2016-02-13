@@ -6,6 +6,20 @@ import com.lightsperfections.slackrelay.beans.logos.HistoryEntry;
 import java.time.LocalDateTime;
 
 /**
+ *
+ * This object corresponds this DynamoDB table
+ *   Table name:            HistoryEntry
+ *   Primary partition key: UserName (String)
+ *   Primary sort key:      Id (String)
+ *
+ * If I use a table with only a Primary Partition Key, it only allows one item per key value. So in the
+ * case of a username, it will store a single historyEntry per user.
+ *
+ * The Primary Sort Key is added to allow unique items under the partition key. I could use the entryTime
+ * for uniqueness, but that causes it to serve two purposes. It also disallows the programmatic addition
+ * of entries at, say, midnight. For this reason I added an auto-generated UUID, which keeps each entry
+ * unique.
+ *
  * Created with IntelliJ IDEA.
  * User: jhughes
  * Date: 12/30/15
@@ -19,6 +33,8 @@ public class DynamoDBHistoryEntry implements HistoryEntry {
     private String userName;
     private LocalDateTime entryTime;
     private String reference;
+
+    public DynamoDBHistoryEntry(){}
 
     public DynamoDBHistoryEntry (String userName, LocalDateTime entryTime, String reference) {
         this.userName = userName;

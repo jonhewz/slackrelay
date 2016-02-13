@@ -10,6 +10,7 @@ import com.lightsperfections.slackrelay.utils.logos.Reporting;
 import com.lightsperfections.slackrelay.utils.logos.ReportingException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -71,7 +72,7 @@ public class Stats implements SlackRelayService {
     public String performAction(String userName, String userText)
             throws DependentServiceException, InternalImplementationException {
 
-        String stats = "";
+        String stats;
 
         // This context for Database stored user history
         AnnotationConfigApplicationContext mainContext =
@@ -79,14 +80,17 @@ public class Stats implements SlackRelayService {
 
         HistoryEntryDao historyEntryDao = mainContext.getBean(HistoryEntryDao.class);
 
-        List<? extends HistoryEntry> historyEntries = historyEntryDao.findHistoryEntriesByUserName(userName);
+        Collection<HistoryEntry> historyEntries = historyEntryDao.findHistoryEntriesByUserName(userName);
 
         try {
             stats =
-                    "Longest Streak: " + Reporting.calculateLongestStreak(historyEntries) + "\n";/* +
-                "Best Day: " + calculateBestDay(historyEntries) + "\n" +
+                    "Best Day: " + Reporting.calculateBestDay(historyEntries) + "\n" +
+                    "Longest Streak: " + Reporting.calculateLongestStreak(historyEntries) + "\n";
+
+                    /*
                 "Average volume (reading days): " + calculateAverageForReadingDays(historyEntries) + "\n" +
                 "Average volume (all days): " + calculateAverageForAllDays(historyEntries);*/
+
         } catch (ReportingException e) {
             return e.getMessage();
         }

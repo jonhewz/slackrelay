@@ -124,4 +124,21 @@ public class ReportingSpec extends Specification {
         longestStreak.contentEquals("6 days (31 Jan 16 - 5 Feb 16)")
     }
 
+    @Test
+    def "Calculate best day with dupe HistoryEntry"() {
+        List<HistoryEntry> historyEntryList = new ArrayList<>();
+
+        setup:
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.of(2015, 12, 31, 0, 0), "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.of(2015, 12, 31, 12, 0), "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.of(2015, 12, 31, 23, 59), "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.of(2015, 12, 31, 0, 0), "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.of(2016, 1, 1, 0, 0), "-"));
+
+        when:
+        def bestDay = Reporting.calculateBestDay(historyEntryList).toString();
+
+        then:
+        bestDay.contentEquals("31 Dec 15 (4 chapters)")
+    }
 }

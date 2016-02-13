@@ -14,9 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -46,21 +44,27 @@ public class DynamoDBHistoryEntryDao implements HistoryEntryDao {
      * @return list of HistoryEntry objects, no guarantee of sorting
      */
     @Override
-    public List<? extends HistoryEntry> findHistoryEntriesByUserName(String userName) {
+    public Collection<HistoryEntry> findHistoryEntriesByUserName(String userName) {
 
         DynamoDBMapper mapper = new DynamoDBMapper(client);
 
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":v1", new AttributeValue().withS(userName));
-
         DynamoDBQueryExpression<DynamoDBHistoryEntry> queryExpression = new DynamoDBQueryExpression<DynamoDBHistoryEntry>()
-                //.withKeyConditionExpression("UserName = :v1")
-                .withIndexName("UserName-index")
                 .withKeyConditionExpression("UserName = :v1")
                 .withExpressionAttributeValues(eav);
 
-        List<DynamoDBHistoryEntry> historyEntries =
+        List<DynamoDBHistoryEntry> immutableHistoryEntries =
                 mapper.query(DynamoDBHistoryEntry.class, queryExpression);
+
+        // Since what is returned is actually a immutable PaginatedQueryList, copy the results into
+        // a regular list that can be sorted down the road.
+        //
+        // http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/dynamodbv2/datamodeling/PaginatedQueryList.html
+        Collection<HistoryEntry> historyEntries = new ArrayList<>();
+        for (HistoryEntry entry : immutableHistoryEntries) {
+            historyEntries.add(entry);
+        }
 
         return historyEntries;
     }
