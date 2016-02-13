@@ -81,6 +81,9 @@ public class Stats implements SlackRelayService {
         HistoryEntryDao historyEntryDao = mainContext.getBean(HistoryEntryDao.class);
 
         Collection<HistoryEntry> historyEntries = historyEntryDao.findHistoryEntriesByUserName(userName);
+        if (historyEntries.size() < 1) {
+            return ("Not enough history to report on.");
+        }
 
         try {
             stats =

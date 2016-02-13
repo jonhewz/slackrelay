@@ -50,14 +50,24 @@ public class Reporting {
         // Sort, smallest streak first
         streaks.sort((o1, o2)->
                 new Long(ChronoUnit.DAYS.between(o1.getBegin(), o1.getEnd())).compareTo(
-                        new Long(ChronoUnit.DAYS.between(o2.getBegin(), o2.getEnd()))));
+                        ChronoUnit.DAYS.between(o2.getBegin(), o2.getEnd())));
 
         // Return the largest streak from the end of the list
         return streaks.get(streaks.size() - 1);
 
     }
 
-    public static BestDay calculateBestDay(Collection<HistoryEntry> historyEntries) {
+    /**
+     * Given a Collection of unordered HistoryEntries, determine the day with the most HistoryEntries. Tiebreakers
+     * are decided by the most recent entry.
+     * @param historyEntries
+     * @return
+     * @throws ReportingException
+     */
+    public static BestDay calculateBestDay(Collection<HistoryEntry> historyEntries) throws ReportingException {
+        if (historyEntries == null || historyEntries.size() < 1) {
+            throw new ReportingException("No history to report on.");
+        }
 
         Map<LocalDateTime, Integer> entriesPerDay = new HashMap<>();
         for (HistoryEntry entry : historyEntries) {
@@ -68,7 +78,12 @@ public class Reporting {
 
         Map.Entry<LocalDateTime, Integer> champion = null;
         for (Map.Entry<LocalDateTime, Integer> contender : entriesPerDay.entrySet()) {
-            if (champion == null || contender.getValue() > champion.getValue()) {
+            if (champion == null || contender.getValue() > champion.getValue() ||
+                    // If the contender is not greater than the champion, at least check if they're
+                    // equal in count. If so, replace, since this way it guarantees the most recent
+                    // tiebreaker.
+                    (contender.getValue().equals(champion.getValue()) &&
+                    contender.getKey().compareTo(champion.getKey()) > 0)) {
                 champion = contender;
             }
         }

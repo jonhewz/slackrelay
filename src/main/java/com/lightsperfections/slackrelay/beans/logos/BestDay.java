@@ -32,6 +32,6 @@ public class BestDay {
      */
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yy");
-        return day.format(formatter) + " (" + count + " chapters)";
+        return day.format(formatter) + " (" + count + " chapter" + (count > 1 ? "s" : "") + ")";
     }
 }

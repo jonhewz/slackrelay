@@ -141,4 +141,53 @@ public class ReportingSpec extends Specification {
         then:
         bestDay.contentEquals("31 Dec 15 (4 chapters)")
     }
+
+    @Test
+    def "Calculate best day with no HistoryEntries"() {
+        List<HistoryEntry> historyEntryList = new ArrayList<>();
+
+        setup:
+
+        when:
+        def msg = "no prob";
+        try {
+            Reporting.calculateBestDay(historyEntryList).toString();
+        } catch (ReportingException e) {
+            msg = e.getMessage();
+        }
+
+        then:
+        msg.contentEquals("No history to report on.")
+    }
+
+    @Test
+    def "Calculate best day with single HistoryEntry"() {
+        List<HistoryEntry> historyEntryList = new ArrayList<>();
+
+        setup:
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.of(2015, 12, 31, 0, 0), "-"));
+
+        when:
+        def bestDay = Reporting.calculateBestDay(historyEntryList).toString();
+
+        then:
+        bestDay.contentEquals("31 Dec 15 (1 chapter)")
+    }
+
+    @Test
+    def "Calculate best day with competing champions"() {
+        List<HistoryEntry> historyEntryList = new ArrayList<>();
+
+        setup:
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.of(2016, 1, 1, 0, 0), "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.of(2015, 12, 31, 0, 0), "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.of(2016, 1, 1, 0, 0), "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.of(2015, 12, 31, 0, 0), "-"));
+
+        when:
+        def bestDay = Reporting.calculateBestDay(historyEntryList).toString();
+
+        then:
+        bestDay.contentEquals("1 Jan 16 (2 chapters)")
+    }
 }
