@@ -1,8 +1,6 @@
 package com.lightsperfections.slackrelay.utils.logos;
 
-import com.lightsperfections.slackrelay.beans.logos.BestDay;
-import com.lightsperfections.slackrelay.beans.logos.HistoryEntry;
-import com.lightsperfections.slackrelay.beans.logos.Streak;
+import com.lightsperfections.slackrelay.beans.logos.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -20,7 +18,8 @@ public class Reporting {
      * @return
      * @throws ReportingException
      */
-    public static Streak calculateLongestStreak(Collection<HistoryEntry> collectionHistoryEntries) throws ReportingException {
+    public static Streak calculateLongestStreak(Collection<HistoryEntry> collectionHistoryEntries)
+            throws ReportingException {
 
         if (collectionHistoryEntries == null || collectionHistoryEntries.size() < 1) {
             throw new ReportingException("No history to report on.");
@@ -90,14 +89,71 @@ public class Reporting {
         return new BestDay(champion.getKey(), champion.getValue());
     }
 
-/*
-    public static void calculateAverageForReadingDays(List<HistoryEntry> historyEntries) {
+
+    /**
+     * Given a Collection of unordered HistoryEntries, determine the average number of entries per day from
+     * the earliest entry's date til now.
+     * @param historyEntries
+     * @return
+     * @throws ReportingException
+     */
+    public static ChapterCount calculateAverageForReadingDays(Collection<HistoryEntry> historyEntries)
+            throws ReportingException {
+
+
+        if (historyEntries == null || historyEntries.size() < 1) {
+            throw new ReportingException("No history to report on.");
+        }
+
+        // Store unique days
+        Set<LocalDateTime> days = new HashSet<>();
+        for (HistoryEntry entry : historyEntries) {
+            days.add(entry.getEntryTime().truncatedTo(ChronoUnit.DAYS));
+        }
+
+        return new ChapterCount(historyEntries.size() / (double) days.size());
 
     }
 
-    public static void calculateAverageForAllDays(List<HistoryEntry> historyEntries) {
+    /**
+     * Given a Collection of unordered HistoryEntries, determine the average number of entries per day for the
+     * days with recorded entries.
+     * @param collectionHistoryEntries
+     * @return
+     * @throws ReportingException
+     */
+    public static ChapterCount calculateAverageForAllDays(Collection<HistoryEntry> collectionHistoryEntries)
+            throws ReportingException {
+
+
+        if (collectionHistoryEntries == null || collectionHistoryEntries.size() < 1) {
+            throw new ReportingException("No history to report on.");
+        }
+
+        // List has to be sorted to determine first day.
+        List<HistoryEntry> historyEntries = new ArrayList<>(collectionHistoryEntries);
+        historyEntries.sort((o1, o2) -> o1.getEntryTime().compareTo(o2.getEntryTime()));
+
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
+
+        long totalDays = ChronoUnit.DAYS.between(
+                historyEntries.get(0).getEntryTime().truncatedTo(ChronoUnit.DAYS), now);
+
+        return new ChapterCount(historyEntries.size() / (double) totalDays);
+    }
+
+    /**
+     * Given a Collection of unordered HistoryEntries, determine the number of times each book has been read.
+     *
+     */
+    public static BooksRead calculateBooksRead(Collection<HistoryEntry> historyEntries) {
+        BooksRead booksRead = new BooksRead();
+
+        for (HistoryEntry entry : historyEntries) {
+
+        }
+        return booksRead;
 
     }
 
-*/
 }

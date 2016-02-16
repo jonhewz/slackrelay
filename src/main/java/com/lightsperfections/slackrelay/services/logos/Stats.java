@@ -10,6 +10,7 @@ import com.lightsperfections.slackrelay.utils.logos.Reporting;
 import com.lightsperfections.slackrelay.utils.logos.ReportingException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,33 +34,42 @@ public class Stats implements SlackRelayService {
     }
 
     /**
-     * Display user stats
+     * Display user stats. Example:
      *
-     * Longest streak: 21 days (9/1/15 - 10/21/15)
-     * Biggest day: 15 chapters on 9/1/15
-     * Average num chapters (reading days): 8.4 chapters
-     * Average num chapters (all days): 3.8 chapters
+     * Daily Average
+     *     reading days: 6.0 chapters
+     *     all days: 2.0 chapters
+     * Best Day: 12 Feb 16 (6 chapters)
+     * Longest Streak: 1 day (12 Feb 16 - 12 Feb 16)
      * Completed books: HOS|3 GE|2 PHP|1
-     * Times of Day:
      *
-     *       *
-     *       *
-     *       *       *
-     *       *  *    *
-     * -----------------------
-     * N  5  8 11  1  4  7  10
-     *
-     * Year trend:
-     *
-     *         *   *
-     *     *   *   *
-     * *   *   *   *
-     * --------------
-     * Q1  Q2  Q3  Q4
+     * Times of Day
+     * ------------
+     *  N|
+     *  5|********
+     *  8|***
+     * 11|
+     *  1|
+     *  4|*****
+     *  7|
+     * 10|
      *
      *
-     * NOTES
-     * HashMap<Date, List<Reference>> - loop through and track largest value size
+     * Past Year
+     * ----------
+     * F|********
+     * J|*****************
+     * D|**************
+     * N|************
+     * O|**********
+     * S|*******
+     * A|******
+     * J|*****
+     * J|**********
+     * M|**************
+     * A|***
+     * M|*****
+     *
      *
      *
      * @param userName
@@ -87,16 +97,49 @@ public class Stats implements SlackRelayService {
 
         try {
             stats =
+                    "Daily Average\n" +
+                    "    reading days: " + Reporting.calculateAverageForReadingDays(historyEntries) + "\n" +
+                    "    all days: " + Reporting.calculateAverageForAllDays(historyEntries) + "\n" +
                     "Best Day: " + Reporting.calculateBestDay(historyEntries) + "\n" +
                     "Longest Streak: " + Reporting.calculateLongestStreak(historyEntries) + "\n";
-
-                    /*
-                "Average volume (reading days): " + calculateAverageForReadingDays(historyEntries) + "\n" +
-                "Average volume (all days): " + calculateAverageForAllDays(historyEntries);*/
 
         } catch (ReportingException e) {
             return e.getMessage();
         }
+
+
+        // Add a history row
+        /*
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Psalms 1");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Isaiah 1");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "John 1");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "1st Thessalonians 1");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Philemon 1");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Job 1");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Genesis 1");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Genesis 2");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Daniel 1");
+
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "Psalms 2");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "Isaiah 2");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "John 2");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "1st Thessalonians 2");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "James 1");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "Job 2");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "Genesis 3");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "Genesis 4");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "Daniel 2");
+
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "Psalms 3");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "Isaiah 3");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "John 3");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "1st Thessalonians 3");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "James 2");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "Job 3");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "Genesis 5");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "Genesis 6");
+        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "Daniel 3");
+*/
 
         return stats;
     }

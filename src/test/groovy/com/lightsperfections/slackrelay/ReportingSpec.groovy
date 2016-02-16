@@ -190,4 +190,100 @@ public class ReportingSpec extends Specification {
         then:
         bestDay.contentEquals("1 Jan 16 (2 chapters)")
     }
+
+    @Test
+    def "Calculate average(all) with no HistoryEntries"() {
+        List<HistoryEntry> historyEntryList = new ArrayList<>();
+
+        setup:
+
+        when:
+        def msg = "no prob";
+        try {
+            Reporting.calculateAverageForAllDays(historyEntryList).toString();
+        } catch (ReportingException e) {
+            msg = e.getMessage();
+        }
+
+        then:
+        msg.contentEquals("No history to report on.")
+    }
+
+    @Test
+    def "Calculate average(all)"() {
+        List<HistoryEntry> historyEntryList = new ArrayList<>();
+
+        setup:
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(2) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(2) , "-"));
+
+        when:
+        def av = Reporting.calculateAverageForAllDays(historyEntryList).toString();
+
+        then:
+        av.contentEquals("2.5 chapters")
+    }
+
+    @Test
+    def "Calculate average(reading) with no HistoryEntries"() {
+        List<HistoryEntry> historyEntryList = new ArrayList<>();
+
+        setup:
+
+        when:
+        def msg = "no prob";
+        try {
+            Reporting.calculateAverageForReadingDays(historyEntryList).toString();
+        } catch (ReportingException e) {
+            msg = e.getMessage();
+        }
+
+        then:
+        msg.contentEquals("No history to report on.")
+    }
+
+    @Test
+    def "Calculate average(reading)"() {
+        List<HistoryEntry> historyEntryList = new ArrayList<>();
+
+        setup:
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(4) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(2) , "-"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(2) , "-"));
+
+        when:
+        def av = Reporting.calculateAverageForReadingDays(historyEntryList).toString();
+
+        then:
+        av.contentEquals("5.0 chapters")
+    }
+
+    @Test
+    def "Calculate average(all), with rounding"() {
+        List<HistoryEntry> historyEntryList = new ArrayList<>();
+
+        setup:
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now().minusDays(3) , "-"));
+
+        when:
+        def av = Reporting.calculateAverageForAllDays(historyEntryList).toString();
+
+        then:
+        av.contentEquals("0.3 chapters")
+    }
 }
