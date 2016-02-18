@@ -5,7 +5,7 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.lightsperfections.slackrelay.beans.logos.HistoryEntry;
 import com.lightsperfections.slackrelay.beans.logos.dynamodb.DynamoDBHistoryEntry;
@@ -50,12 +50,12 @@ public class DynamoDBHistoryEntryDao implements HistoryEntryDao {
 
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":v1", new AttributeValue().withS(userName));
-        DynamoDBQueryExpression<DynamoDBHistoryEntry> queryExpression = new DynamoDBQueryExpression<DynamoDBHistoryEntry>()
-                .withKeyConditionExpression("UserName = :v1")
+        DynamoDBScanExpression queryExpression = new DynamoDBScanExpression()
+                .withFilterExpression("UserName = :v1")
                 .withExpressionAttributeValues(eav);
 
         List<DynamoDBHistoryEntry> immutableHistoryEntries =
-                mapper.query(DynamoDBHistoryEntry.class, queryExpression);
+                mapper.scan(DynamoDBHistoryEntry.class, queryExpression);
 
         // Since what is returned is actually a immutable PaginatedQueryList, copy the results into
         // a regular list that can be sorted down the road.

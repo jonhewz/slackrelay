@@ -108,38 +108,6 @@ public class Stats implements SlackRelayService {
         }
 
 
-        // Add a history row
-        /*
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Psalms 1");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Isaiah 1");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "John 1");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "1st Thessalonians 1");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Philemon 1");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Job 1");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Genesis 1");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Genesis 2");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 4, 6, 30), "Daniel 1");
-
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "Psalms 2");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "Isaiah 2");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "John 2");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "1st Thessalonians 2");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "James 1");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "Job 2");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "Genesis 3");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "Genesis 4");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 5, 6, 30), "Daniel 2");
-
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "Psalms 3");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "Isaiah 3");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "John 3");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "1st Thessalonians 3");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "James 2");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "Job 3");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "Genesis 5");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "Genesis 6");
-        historyEntryDao.createHistoryEntryForUserName("jon", LocalDateTime.of(2016, 2, 8, 6, 30), "Daniel 3");
-*/
 
         return stats;
     }
