@@ -13,7 +13,7 @@ public class BooksRead {
 
     public void addBook(Book book) {
         Integer count = bookCount.get(book);
-        bookCount.put(book, count == null ? 0 : count + 1);
+        bookCount.put(book, count == null ? 1 : count + 1);
     }
 
     /**
@@ -24,10 +24,16 @@ public class BooksRead {
      */
     public String toString() {
         String rv = "";
+        boolean first = true;
         for (Book book : Book.values()) {
             Integer count = bookCount.get(book);
             if (count != null && count > 0) {
-                rv += book + "|" + count + " ";
+                if (first) {
+                    first = false;
+                } else {
+                    rv += " ";
+                }
+                rv += book + "|" + count;
             }
         }
         return rv;

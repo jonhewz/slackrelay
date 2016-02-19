@@ -36,3 +36,4 @@ User chats with a Daily Reading bot in slack. It is not a public conversation. T
 * `/logos pop` - get the next passage
 * `/logos status` - progress info
 * `/logos plans` - listing of plans
+* `/logos stats` - user reporting

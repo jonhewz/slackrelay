@@ -286,4 +286,31 @@ public class ReportingSpec extends Specification {
         then:
         av.contentEquals("0.3 chapters")
     }
+
+
+    @Test
+    def "Calculate books read"() {
+        List<HistoryEntry> historyEntryList = new ArrayList<>();
+
+        setup:
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now(), "Obadiah 1"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now(), "Obadiah 1"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now(), "Haggai 1"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now(), "Haggai 1"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now(), "Joel 1"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now(), "Joel 2"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now(), "Joel 3"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now(), "Joel 1"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now(), "Joel 2"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now(), "Joel 3"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now(), "Joel 1"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now(), "Joel 2"));
+        historyEntryList.add(new DynamoDBHistoryEntry("a", LocalDateTime.now(), "Joel 4"));
+
+        when:
+        def br = Reporting.calculateBooksRead(historyEntryList).toString();
+
+        then:
+        br.contentEquals("JOE|2 OB|2")
+    }
 }

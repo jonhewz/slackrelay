@@ -74,6 +74,16 @@ public enum Book {
     public final int chapterCount;
     public final String displayName;
 
+    public static Book findByReference(String reference) {
+        Book returnBook = null;
+        for (Book b : Book.values()) {
+            if (reference != null && reference.toLowerCase().contains(b.displayName.toLowerCase())) {
+                returnBook = b;
+            }
+        }
+        return returnBook;
+    }
+
     Book(int chapterCount, String displayName) {
         this.chapterCount = chapterCount;
         this.displayName = displayName;

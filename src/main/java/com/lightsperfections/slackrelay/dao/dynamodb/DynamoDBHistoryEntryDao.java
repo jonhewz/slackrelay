@@ -7,6 +7,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.lightsperfections.slackrelay.beans.Book;
 import com.lightsperfections.slackrelay.beans.logos.HistoryEntry;
 import com.lightsperfections.slackrelay.beans.logos.dynamodb.DynamoDBHistoryEntry;
 import com.lightsperfections.slackrelay.dao.HistoryEntryDao;

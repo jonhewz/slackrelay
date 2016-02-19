@@ -1,5 +1,6 @@
 package com.lightsperfections.slackrelay.utils.logos;
 
+import com.lightsperfections.slackrelay.beans.Book;
 import com.lightsperfections.slackrelay.beans.logos.*;
 
 import java.time.LocalDateTime;
@@ -149,11 +150,28 @@ public class Reporting {
     public static BooksRead calculateBooksRead(Collection<HistoryEntry> historyEntries) {
         BooksRead booksRead = new BooksRead();
 
+        // Initialize a book tracker per Book.
+        Map<Book, BookReferenceTracker> bookReferenceTracker = new HashMap<>();
+        for (Book b : Book.values()) {
+            bookReferenceTracker.put(b, new BookReferenceTracker(b));
+        }
+
+        // Loop through the history (in any order).
         for (HistoryEntry entry : historyEntries) {
+            Book book = Book.findByReference(entry.getReference());
+            if (bookReferenceTracker.get(book).checkIfComplete(entry.getReference())) {
+                booksRead.addBook(book);
+                bookReferenceTracker.put(book, new BookReferenceTracker(book));
+            }
 
         }
+
         return booksRead;
 
     }
+
+
+
+
 
 }

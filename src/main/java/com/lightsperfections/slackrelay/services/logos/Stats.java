@@ -101,7 +101,8 @@ public class Stats implements SlackRelayService {
                     "    reading days: " + Reporting.calculateAverageForReadingDays(historyEntries) + "\n" +
                     "    all days: " + Reporting.calculateAverageForAllDays(historyEntries) + "\n" +
                     "Best Day: " + Reporting.calculateBestDay(historyEntries) + "\n" +
-                    "Longest Streak: " + Reporting.calculateLongestStreak(historyEntries) + "\n";
+                    "Longest Streak: " + Reporting.calculateLongestStreak(historyEntries) + "\n" +
+                    "Completed Books: " + Reporting.calculateBooksRead(historyEntries);
 
         } catch (ReportingException e) {
             return e.getMessage();
