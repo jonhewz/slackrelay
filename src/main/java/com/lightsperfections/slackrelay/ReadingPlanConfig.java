@@ -63,7 +63,7 @@ public class ReadingPlanConfig {
                 Book.PS});
         readingPlan.addTrack("... and the prophets point to...", new Book[]{
                 Book.ISA, Book.JER, Book.LA, Book.EZE, Book.HO, Book.JOE, Book.AM,
-                Book.OB, Book.JON, Book.MIC, Book.NA, Book.HAB, Book.ZEC, Book.HAG,
+                Book.OB, Book.JON, Book.MIC, Book.NA, Book.HAB, Book.ZEP, Book.HAG,
                 Book.ZEC, Book.MAL});
         readingPlan.addTrack("... the Gospel", new Book[]{
                 Book.JOH, Book.MR, Book.MT, Book.LU, Book.AC});
@@ -80,6 +80,42 @@ public class ReadingPlanConfig {
                 Book.SA1, Book.SA2, Book.KI1, Book.KI2, Book.EZR, Book.CH1, Book.CH2, Book.NE, Book.ES});
         readingPlan.addTrack("Apocalyptic", new Book[]{
                 Book.DA, Book.RE});
+
+        return readingPlan;
+    }
+
+    @Bean(name="iwh")
+    public ReadingPlan getIWH() {
+        ReadingPlan readingPlan = new ReadingPlan("iwh", "Isaac's plan for daily reading");
+
+        readingPlan.addTrack("Psalms", new Book[]{
+                Book.PS});
+        readingPlan.addTrack("Proverbs", new Book[]{
+                Book.PR});
+        readingPlan.addTrack("Gospels", new Book[]{
+                Book.MT, Book.MR, Book.LU, Book.JOH});
+        readingPlan.addTrack("Acts/Romans", new Book[]{
+                Book.AC, Book.RO});
+        readingPlan.addTrack("Standalone Letters", new Book[]{
+                Book.GA, Book.EPH, Book.PHP, Book.COL, Book.TIT, Book.PHM, Book.HEB, Book.JAS, Book.JUDE});
+        readingPlan.addTrack("Sequence Starters", new Book[]{
+                Book.CO1, Book.TH1, Book.TI1, Book.PE1, Book.JO1});
+        readingPlan.addTrack("Sequence Enders", new Book[]{
+                Book.CO2, Book.TH2, Book.TI2, Book.PE2, Book.JO2, Book.JO3});
+        readingPlan.addTrack("Pentateuch", new Book[]{
+                Book.GE, Book.EX, Book.LE, Book.NU, Book.DE});
+        readingPlan.addTrack("Samuel/Kings/Chronicles", new Book[]{
+                Book.SA1, Book.SA2, Book.KI1, Book.KI2, Book.CH1, Book.CH2});
+        readingPlan.addTrack("History", new Book[]{
+                Book.JOS, Book.JUD, Book.RU, Book.EZR, Book.NE, Book.ES});
+        readingPlan.addTrack("Ecclesiastes", new Book[]{
+                Book.EC});
+        readingPlan.addTrack("Prophets", new Book[]{
+                Book.ISA, Book.JER, Book.LA, Book.EZE, Book.HO, Book.JOE, Book.AM,
+                Book.OB, Book.MIC, Book.NA, Book.HAB, Book.ZEP, Book.HAG,
+                Book.ZEC, Book.MAL});
+        readingPlan.addTrack("Daniel/Jonah/Revelation", new Book[]{
+                Book.DA, Book.JON, Book.RE});
 
         return readingPlan;
     }
